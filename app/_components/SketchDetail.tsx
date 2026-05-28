@@ -7,7 +7,7 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2, RotateCcw, 
 import { SketchMetadata } from '@/app/types';
 import { P5Wrapper } from './P5Wrapper';
 import { wrapSketchCode } from '@/app/_lib/sketchUtils';
-import { P5_API_SYMBOLS, findUsedP5Symbols, type P5ApiCategory } from '@/app/_lib/p5ApiSymbols';
+import { findUsedP5Symbols } from '@/app/_lib/p5ApiSymbols';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import Markdown, { Components } from 'react-markdown';
