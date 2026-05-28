@@ -1,0 +1,129 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Space Grotesk", sans-serif;
+
+  --color-primary: #000000;
+  --color-primary-container: #eeeeee;
+  --color-on-primary: #ffffff;
+  
+  --color-secondary: #000000;
+  --color-secondary-container: #f5f5f5;
+  --color-on-secondary: #ffffff;
+
+  --color-tertiary: #000000;
+  --color-tertiary-container: #f0f0f0;
+  --color-on-tertiary: #ffffff;
+
+  --color-surface: #ffffff;
+  --color-surface-container-low: #ffffff;
+  --color-surface-container-high: #f9f9f9;
+  --color-surface-container-highest: #eeeeee;
+  --color-surface-container-lowest: #ffffff;
+  
+  --color-on-surface: #000000;
+  --color-on-surface-variant: #666666;
+  
+  --color-outline: #000000;
+  --color-outline-variant: #dddddd;
+
+  --radius-default: 12px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --spacing-base: 32px;
+}
+
+/* Dark mode overrides */
+.dark {
+  --color-primary: #ffffff;
+  --color-primary-container: #374151;
+  --color-on-primary: #111827;
+  
+  --color-secondary: #ffffff;
+  --color-secondary-container: #1f2937;
+  --color-on-secondary: #ffffff;
+
+  --color-tertiary: #ffffff;
+  --color-tertiary-container: #4b5563;
+  --color-on-tertiary: #ffffff;
+
+  --color-surface: #1f2937;
+  --color-surface-container-low: #1f2937;
+  --color-surface-container-high: #374151;
+  --color-surface-container-highest: #4b5563;
+  --color-surface-container-lowest: #111827;
+  
+  --color-on-surface: #f9fafb;
+  --color-on-surface-variant: #9ca3af;
+  
+  --color-outline: #4b5563;
+  --color-outline-variant: #374151;
+}
+
+:root {
+  /* Layout Variables */
+  --nav-height: 80px;
+
+  /* Specific design system overrides */
+  --primary: var(--color-primary);
+  --on-primary: var(--color-on-primary);
+  --surface: var(--color-surface);
+  --on-surface: var(--color-on-surface);
+  --spacing-base: 32px;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-mono);
+  font-weight: 400;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global Reset to avoid bold */
+h1, h2, h3, h4, h5, h6, button, span, div {
+  font-weight: 400 !important;
+}
+
+/* Custom Utilities for the Editorial Brutalism theme */
+.tracking-widest-labels {
+  letter-spacing: 0.15em;
+}
+
+.broken-grid-offset {
+  margin-top: -4rem;
+}
+
+.sketch-placeholder-bg {
+  background: linear-gradient(45deg, #f0f0f0 25%, #e2e2e2 25%, #e2e2e2 50%, #f0f0f0 50%, #f0f0f0 75%, #e2e2e2 75%, #e2e2e2 100%);
+  background-size: 40px 40px;
+}
+
+.editorial-headline {
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+}
+
+@layer base {
+  html {
+    font-size: 16px;
+  }
+  
+  .font-mono-xs {
+    font-size: 0.688rem;
+    line-height: 1rem;
+  }
+
+  .font-mono-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+
+  .p5Canvas {
+    touch-action: pan-y pinch-zoom !important;
+  }
+}
