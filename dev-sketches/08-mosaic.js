@@ -101,5 +101,3 @@ const sketch = (p) => {
     rebuildTiles();
   };
 };
-
-new p5(sketch);

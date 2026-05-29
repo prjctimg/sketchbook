@@ -115,5 +115,3 @@ const sketch = (p) => {
     for (const d of newDrifters) drifters.push(d);
   };
 };
-
-new p5(sketch);

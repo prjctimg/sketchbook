@@ -1,13 +1,3 @@
-const LIFECYCLE_NAMES = [
-  'setup', 'draw', 'preload',
-  'mousePressed', 'mouseReleased', 'mouseClicked',
-  'mouseMoved', 'mouseDragged', 'mouseWheel',
-  'keyPressed', 'keyReleased', 'keyTyped', 'windowResized',
-  'touchStarted', 'touchMoved', 'touchEnded',
-  'deviceMoved', 'deviceTurned', 'deviceShaken', 'doubleClicked',
-];
-
-const transformCache = new Map<string, string>();
 const wrapCache = new Map<string, (p: any) => void>();
 
 export const wrapSketchCode = (code: string) => {
@@ -15,20 +5,9 @@ export const wrapSketchCode = (code: string) => {
     return wrapCache.get(code)!;
   }
 
-  let transformed = transformCache.get(code);
-  if (!transformed) {
-    transformed = code.replace(
-      /^[ \t]*function\s+(\w+)\s*\(/gm,
-      (_, name) => LIFECYCLE_NAMES.includes(name)
-        ? `p.${name} = function(`
-        : `var ${name} = function(`
-    );
-    transformCache.set(code, transformed);
-  }
-
   const wrappedFn = (p: any) => {
     try {
-      const fn = new Function('p', `with(p) { ${transformed} }`);
+      const fn = new Function('p', code + '\nif (typeof sketch === "function") sketch(p);');
       fn(p);
     } catch (e) {
       console.error('Error wrapping p5 sketch:', e);

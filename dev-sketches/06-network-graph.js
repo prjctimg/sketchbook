@@ -139,5 +139,3 @@ const sketch = (p) => {
     rebuildLayout();
   };
 };
-
-new p5(sketch);

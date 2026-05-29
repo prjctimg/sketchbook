@@ -107,11 +107,23 @@ function extractNpmDependencies(code: string): string[] {
 
 export async function fetchGistSketches(): Promise<SketchMetadata[]> {
   const gists = await fetchGists();
+  const includeMarker = siteMeta.github.gistIncludeMarker?.trim();
 
   const gistPromises = gists
     .filter(gist => gist.files['sketch.js'])
     .map(async (gist) => {
       const sketchFile = gist.files['sketch.js'];
+
+      let code: string | undefined;
+      try {
+        code = await fetchSketchCode(sketchFile.raw_url);
+      } catch (e) {
+        console.warn(`Failed to fetch code for gist ${gist.id}:`, e);
+      }
+
+      if (includeMarker && (!code || !code.startsWith(includeMarker))) {
+        return null;
+      }
 
       const [comments, p5jsonContent] = await Promise.all([
         fetchGistComments(gist.id),
@@ -125,13 +137,7 @@ export async function fetchGistSketches(): Promise<SketchMetadata[]> {
       const description = gist.description || firstComment || 'No description';
       const additionalInfo = firstComment && gist.description ? firstComment : null;
 
-      let code: string | undefined;
       let cdnUrls: string[] = [];
-      try {
-        code = await fetchSketchCode(sketchFile.raw_url);
-      } catch (e) {
-        console.warn(`Failed to fetch code for gist ${gist.id}:`, e);
-      }
 
       let thumbnail = generateThumbnailFromId(gist.id);
       if (gist.files['thumbnail.png']) {
@@ -164,7 +170,7 @@ export async function fetchGistSketches(): Promise<SketchMetadata[]> {
         title: generateTitleFromDescription(gist.description, gist.id),
         description: additionalInfo || description,
         date: formatDate(gist.created_at),
-        tags: [],
+        tags: [] as string[],
         thumbnail,
         technicalDetails: {
           rendering: 'CANVAS 2D',
@@ -176,7 +182,8 @@ export async function fetchGistSketches(): Promise<SketchMetadata[]> {
       };
     });
 
-  const validGists = await Promise.all(gistPromises) as SketchMetadata[];
+  const results = await Promise.all(gistPromises);
+  const validGists = results.filter(Boolean) as SketchMetadata[];
 
   return validGists;
 }
