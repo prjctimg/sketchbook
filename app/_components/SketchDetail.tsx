@@ -244,7 +244,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
               <div className="mb-4">
                 <span className="bg-primary-container text-primary font-mono-sm uppercase tracking-widest font-medium px-3 py-1 rounded-lg">Description</span>
               </div>
-              <div className="font-mono leading-relaxed opacity-80 text-justify">
+              <div className="font-mono leading-relaxed opacity-80 text-justify max-h-[300px] overflow-y-auto">
                 <Markdown components={markdownComponents}>{sketch.description}</Markdown>
               </div>
             </section>

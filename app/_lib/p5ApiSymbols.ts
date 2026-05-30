@@ -20,7 +20,6 @@ type CategoryRule = {
 const CATEGORIES: CategoryRule[] = [
   { label: 'Events', test: (n) => /^(mouse|key|touch|device)/.test(n) },
   { label: 'Lifecycle', test: (n) => /^(setup|draw|preload|windowResized|remove)$/.test(n) },
-  { label: 'Creation', test: (n) => n.startsWith('create') && n !== 'createCanvas' },
   { label: 'I/O', test: (n) => /^(load|save|http)/.test(n) },
   {
     label: 'Transform',
@@ -69,6 +68,10 @@ const CATEGORIES: CategoryRule[] = [
   {
     label: 'Vector',
     test: (n) => /^(createVector|fromAngle|fromAngles|normalize|setMag|limit|heading|angleBetween|dot|cross|random2D|random3D)/.test(n),
+  },
+  {
+    label: 'Creation',
+    test: (n) => n.startsWith('create') && n !== 'createCanvas',
   },
 ];
 

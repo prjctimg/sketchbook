@@ -1,11 +1,11 @@
 {
   "site": {
     "title": "skchbk",
-    "description": "A generative p5.js artifact archive.",
-    "url": "https://skchbk.prjctimg.me"
+    "description": "Your description",
+    "url": "https://example.com"
   },
   "github": {
-    "username": "skchr",
-    "gistIncludeMarker": ""
+    "username": "your-username",
+    "gistIncludeMarker": "// @sketch"
   }
 }

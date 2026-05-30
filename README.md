@@ -1,10 +1,13 @@
+# sketchbook 🏞️
+
 ![skchbk](skchbk.png)
 
-**skchbk** — a Next.js gallery for p5.js generative art sketches loaded from GitHub Gists.
+> Gallery to showcase your sketches hosted as GitHub Gists🐙  
+>
 
 ## Configuration
 
-Edit `sitemeta.json` to set up your instance:
+Edit the [`sitemeta.json`](https://github.com/prjctimg/sketchbook) file to configure your sketchbook:
 
 ```jsonc
 {
@@ -15,29 +18,31 @@ Edit `sitemeta.json` to set up your instance:
   },
   "github": {
     "username": "your-github-username",  // GitHub user whose gists to load
-    "gistIncludeMarker": ""             // If set, only include gists whose
+    "gistIncludeMarker": "// @sketch"             // If set, only include gists whose
                                         // sketch.js starts with this string.
                                         // Empty = include all gists.
   }
 }
 ```
 
-### Gist structure
+### Using GitHub Gists for hosting sketches
 
 Each gist must contain a `sketch.js` file. Optional files:
 
 | File | Purpose |
 |------|---------|
-| `sketch.js` | p5.js sketch code (instance mode) |
 | `p5.json` | Dependency definitions (`libs` field) |
-| `thumbnail.png` / `thumbnail.jpg` | Custom thumbnail override |
 
-The first GitHub comment on a gist (by the gist owner) becomes the sketch description.
+The first GitHub comment on a gist (by the gist owner) becomes the sketch description and any changes to the comment are reflected on the sketchbook immediately after it is reloaded.
 
-### Dev mode
+### Further reading
 
-```bash
-DEV_SKETCHES_DIR=dev-sketches npm run dev
-```
+> [!caution]
+>
+> Rendering is expensive. If your sketch is making the preview page lag  then it may be wiser to do most stuff in the `setup()` function, pin to a lower `frameRate()` or call `noLoop()` at the end of the `draw()` function (though this will limit the interactivity of the sketch).
+>
+> See  [Optimizing p5.js code (wiki)](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
 
-JavaScript files in `dev-sketches/` are loaded as local sketches (no gist dependency).
+> ### License
+>
+> This is free software software released under the GPL-3.0 license.
