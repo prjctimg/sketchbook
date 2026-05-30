@@ -1,6 +1,8 @@
 # sketchbook 🏞️
 
+![](./skchbk.png)
 ----
+>
 > Showcase p5.js 🌸 sketches hosted on GitHub gists 🎏
 >
 ----
