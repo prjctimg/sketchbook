@@ -1,15 +1,12 @@
-# sketchbook 🏞️
+# sketchbook
 
-![](./skchbk.png)
-----
->
-> Showcase p5.js 🌸 sketches hosted on GitHub gists 🎏
->
-----
+![skchbk](skchbk.png)
+
+> A Next.js gallery for p5.js sketches loaded from GitHub Gists.
 
 ## Configuration
 
-Edit the [`sitemeta.json`](https://github.com/prjctimg/sketchbook/blob/main/sitemeta.json) file to configure your sketchbook:
+Edit the `sitemeta.json` file to configure your sketchbook:
 
 ```jsonc
 {
@@ -19,15 +16,16 @@ Edit the [`sitemeta.json`](https://github.com/prjctimg/sketchbook/blob/main/site
     "url": "https://example.com"  // Deployed URL
   },
   "github": {
-    "username": "your-github-username",  // GitHub user whose gists to load
-    "gistIncludeMarker": "// @sketch"             // If set, only include gists whose
-                                        // sketch.js starts with this string.
-                                        // Empty = include all gists.
+    "username": "your-github-username",
+    "gistIncludeMarker": "// @sketch"  // Only include gists whose sketch.js starts with this string
+  },
+  "ga": {
+    "measurementId": ""  // Google Analytics 4 measurement ID (optional)
   }
 }
 ```
 
-### Using GitHub Gists for hosting sketches
+### Using GitHub Gists
 
 Each gist must contain a `sketch.js` file. Optional files:
 
@@ -35,25 +33,29 @@ Each gist must contain a `sketch.js` file. Optional files:
 |------|---------|
 | `p5.json` | Dependency definitions (`libs` field) |
 
-The first GitHub comment on a gist (by the gist owner) becomes the sketch description and any changes to the comment are reflected on the sketchbook immediately after it is reloaded.
-
-### Further reading
+The first GitHub comment on a gist (by the gist owner) becomes the sketch description.
 
 > [!caution]
+> Rendering is expensive. If your sketch is making the preview page lag, do most work in `setup()`, lower `frameRate()`, or call `noLoop()` at the end of `draw()`.
 >
-> Rendering is expensive. If your sketch is making the preview page lag  then it may be wiser to do most stuff in the `setup()` function, pin to a lower `frameRate()` or call `noLoop()` at the end of the `draw()` function (though this will limit the interactivity of the sketch).
->
-> See  [Optimizing p5.js code (wiki)](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
+> See [Optimizing p5.js Code for Performance](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
 
-There's also [a nice "terminal-first" workflow  for developing sketches and publishing to your sketchbook using Neovim](https://prjctimg.me/blg/how-i-use-neovim-to-run-my-skchbk) and the [p5.nvim](https://github.com/prjctimg/p5.nvim) plugin.
+### Dev Mode
 
----
+```bash
+DEV_SKETCHES_DIR=dev-sketches npm run dev
+```
 
-> ## License 📜
->
-> (c) 2026, [prjctimg](https://prjctimg.me)
->
-> This is free software, released under the GPL-3.0 license.
+Place `sketch.js` files in `dev-sketches/` for local development without GitHub Gists.
 
----
----
+Add a `p5.json` file in `dev-sketches/` to declare global dependencies:
+
+```json
+{
+  "libs": { "d3": "7" }
+}
+```
+
+## License
+
+(c) 2026, prjctimg — GPL-3.0

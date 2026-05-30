@@ -8,6 +8,8 @@ import { SketchMetadata } from '@/app/types';
 import { P5Wrapper } from './P5Wrapper';
 import { wrapSketchCode } from '@/app/_lib/sketchUtils';
 import { findUsedP5Symbols } from '@/app/_lib/p5ApiSymbols';
+import { easing, duration } from '@/app/_lib/motion';
+import { NoLoopWarning } from './FESBanner';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import Markdown, { Components } from 'react-markdown';
@@ -111,22 +113,28 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
           </button>
           {(!!prevId || !!nextId) && (
             <div className="flex space-x-2">
-              <button
+              <motion.button
                 onClick={handlePrev}
                 disabled={!!!prevId}
+                whileHover={!!prevId ? { scale: 1.02 } : {}}
+                whileTap={!!prevId ? { scale: 0.97 } : {}}
+                transition={{ duration: duration.micro, ease: easing.standard }}
                 className={`flex items-center space-x-1 font-mono-xs uppercase tracking-widest transition-opacity rounded-lg ${!!prevId ? 'opacity-60 hover:opacity-100' : 'opacity-20 cursor-not-allowed'}`}
               >
                 <ChevronLeft className="w-3 h-3" />
                 <span>Prev</span>
-              </button>
-              <button
+              </motion.button>
+              <motion.button
                 onClick={handleNext}
                 disabled={!!!nextId}
+                whileHover={!!nextId ? { scale: 1.02 } : {}}
+                whileTap={!!nextId ? { scale: 0.97 } : {}}
+                transition={{ duration: duration.micro, ease: easing.standard }}
                 className={`flex items-center space-x-1 font-mono-xs uppercase tracking-widest transition-opacity rounded-lg ${!!nextId ? 'opacity-60 hover:opacity-100' : 'opacity-20 cursor-not-allowed'}`}
               >
                 <span>Next</span>
                 <ChevronRight className="w-3 h-3" />
-              </button>
+              </motion.button>
             </div>
           )}
         </div>
@@ -137,6 +145,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: duration.medium, ease: easing.decelerate }}
             className="lg:col-span-8 flex justify-between items-end mb-4 border-b border-outline/10 pb-4"
           >
             <h2 className="font-mono text-2xl lg:text-4xl font-medium tracking-tighter uppercase">{sketch.title}</h2>
@@ -164,15 +173,21 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
 
               {/* Controls Overlaid on Canvas */}
               <div className="absolute bottom-6 right-6 flex space-x-2">
-                <button
+                <motion.button
                   onClick={handleReload}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: duration.micro, ease: easing.standard }}
                   className="bg-surface-container-lowest border border-outline/20 px-4 py-2 flex items-center space-x-2 font-mono-sm uppercase tracking-widest rounded-lg transition-colors hover:bg-surface-container-high"
                 >
                   <RotateCcw className="w-4 h-4" />
                   <span>Refresh</span>
-                </button>
-                <button
+                </motion.button>
+                <motion.button
                   onClick={toggleFullscreen}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: duration.micro, ease: easing.standard }}
                   className="bg-surface-container-lowest border border-outline/20 px-4 py-2 flex items-center space-x-2 font-mono-sm uppercase tracking-widest rounded-lg transition-colors hover:bg-surface-container-high"
                 >
                   {isFullscreen ? (
@@ -186,9 +201,11 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                       <span>Fullscreen</span>
                     </>
                   )}
-                </button>
+                </motion.button>
               </div>
             </div>
+
+            <NoLoopWarning code={sketch.code} />
 
             {/* In-page Code Viewer with CodeMirror */}
             <AnimatePresence>
@@ -197,7 +214,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.5, ease: [0.19, 1, 0.22, 1] }}
+                  transition={{ duration: duration.medium, ease: easing.standard }}
                   className="border border-outline/10 bg-surface-container overflow-hidden rounded-xl"
                 >
                   <div className="flex justify-between items-center px-4 py-3 border-b border-outline/10 bg-surface-container">
@@ -264,7 +281,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                 </span>
                 <motion.div
                   animate={{ rotate: showTechDetails ? 180 : 0 }}
-                  transition={{ duration: 0.3, ease: 'easeInOut' }}
+                  transition={{ duration: duration.compact, ease: easing.standard }}
                 >
                   <ChevronDown className="w-4 h-4 opacity-40" />
                 </motion.div>
@@ -276,7 +293,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.4, ease: [0.19, 1, 0.22, 1] }}
+                    transition={{ duration: duration.compact, ease: easing.standard }}
                     className="overflow-hidden"
                   >
                     <div className="pt-4 space-y-6">
@@ -325,7 +342,8 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
             <section className="space-y-3 pt-6 border-t border-outline/10">
               <motion.button
                 whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: duration.micro, ease: easing.standard }}
                 onClick={() => sketch.gistUrl && window.open(sketch.gistUrl, '_blank')}
                 className="w-full bg-primary text-on-primary font-mono-sm uppercase tracking-widest py-4 rounded-lg transition-opacity hover:opacity-90 flex items-center justify-center space-x-2"
               >
@@ -334,7 +352,8 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ duration: duration.micro, ease: easing.standard }}
                 onClick={() => setShowCode(!showCode)}
                 className={`w-full font-mono-sm uppercase tracking-widest py-4 rounded-lg transition-all flex items-center justify-center space-x-2 border ${showCode
                   ? 'bg-on-surface text-surface border-on-surface'

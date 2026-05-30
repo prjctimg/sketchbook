@@ -2,6 +2,9 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
+import siteMeta from '@/sitemeta.json';
+
+const githubUrl = `https://github.com/${siteMeta.github.username}`;
 
 export const Hero: React.FC = () => {
   return (
@@ -9,11 +12,11 @@ export const Hero: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
+        transition={{ duration: 0.5, ease: [0.0, 0, 0.2, 1] }}
         className="max-w-7xl mx-auto"
       >
         <p className="font-mono text-[1.5rem] leading-relaxed max-w-4xl mb-6 opacity-80">
-          I am <a href="https://github.com/skchr" className="hover:text-primary transition-colors underline underline-offset-4 decoration-1">skchr</a>, keeper of this sketchbook (a collection of p5.js programs which are 'unsurprisingly' called sketches). Though all to be seen is already here, <a href="https://github.com/skchr" className="hover:text-primary transition-colors underline underline-offset-4 decoration-1">one can go to the list of sketches</a> for reference.
+          I am <a href={githubUrl} className="hover:text-primary transition-colors underline underline-offset-4 decoration-1">{siteMeta.github.username}</a>, keeper of this sketchbook (a collection of p5.js programs which are 'unsurprisingly' called sketches). Though all to be seen is already here, <a href={githubUrl} className="hover:text-primary transition-colors underline underline-offset-4 decoration-1">one can go to the list of sketches</a> for reference.
 
           <br />
           <br />

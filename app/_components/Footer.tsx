@@ -2,14 +2,15 @@
 
 import React from 'react';
 import { Monitor, Moon, Sun, Github } from 'lucide-react';
+import siteMeta from '@/sitemeta.json';
 
 interface FooterProps {
   theme: string;
   setTheme: (t: 'system' | 'light' | 'dark') => void;
 }
 
-const WHAT_IS_SKETCHBOOK_URL = 'https://prjctimg.me/blg/on-keeping-a-sketchbook';
-const AUTHOR_GITHUB_URL = 'https://github.com/skchr';
+const WHAT_IS_SKETCHBOOK_URL = siteMeta.site.url || 'https://prjctimg.me/blg/on-keeping-a-sketchbook';
+const AUTHOR_GITHUB_URL = `https://github.com/${siteMeta.github.username}`;
 
 export const Footer: React.FC<FooterProps> = ({ theme, setTheme }) => {
   return (

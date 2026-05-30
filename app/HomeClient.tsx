@@ -8,6 +8,8 @@ import { Hero } from '@/app/_components/Hero';
 import { SketchCard } from '@/app/_components/SketchCard';
 import { SketchMetadata } from '@/app/types';
 import { Footer } from '@/app/_components/Footer';
+import { easing, duration } from '@/app/_lib/motion';
+import { FESToast } from '@/app/_components/FESBanner';
 
 export default function HomeClient({ sketches }: { sketches: SketchMetadata[] }) {
   const router = useRouter();
@@ -48,7 +50,7 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
       <motion.main
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: duration.medium, ease: easing.standard }}
         className="flex-grow"
       >
         <Hero />
@@ -59,7 +61,7 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
               <motion.div
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: 0.6 }}
+                transition={{ delay: 0.2, duration: duration.medium, ease: easing.decelerate }}
                 className="lg:col-span-3 space-y-8"
               >
                 <div className="mb-3">
@@ -70,10 +72,11 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
                   {sketches[0].title.split(' ').slice(2).join(' ')}
                 </h2>
                 <motion.button
-                  whileHover={{ x: 10 }}
-                  whileTap={{ scale: 0.98 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{ duration: duration.micro, ease: easing.standard }}
                   onClick={() => handleSketchClick(sketches[0].id)}
-                  className="bg-primary text-on-primary font-mono-sm uppercase tracking-widest px-10 py-4 rounded-lg transition-opacity hover:opacity-90"
+                  className="bg-primary text-on-primary font-mono-sm uppercase tracking-widest px-10 py-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
                 >
                   Preview
                 </motion.button>
@@ -81,7 +84,7 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: 0.6 }}
+                transition={{ delay: 0.3, duration: duration.compact, ease: easing.decelerate }}
                 className="lg:col-span-2 relative rounded-xl overflow-hidden"
               >
                 <SketchCard sketch={sketches[0]} onClick={handleSketchClick} className="w-full h-full !mb-0 border-none pb-0" />
@@ -103,25 +106,27 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1 }}
+                    transition={{ delay: 0.1, duration: duration.compact, ease: easing.decelerate }}
                     className="md:col-span-8"
                   >
                     <SketchCard
                       sketch={sketches[0]}
                       onClick={handleSketchClick}
+                      lazyDelay={0}
                     />
                   </motion.div>
                   <motion.div
                     layout
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
+                    transition={{ delay: 0.2, duration: duration.compact, ease: easing.decelerate }}
                     className="md:col-span-4 flex flex-col justify-end pb-8"
                   >
                     {sketches[1] && (
                       <SketchCard
                         sketch={sketches[1]}
                         onClick={handleSketchClick}
+                        lazyDelay={50}
                       />
                     )}
                   </motion.div>
@@ -132,12 +137,13 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
                       key={sketch.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 * (idx % 3 + 1) }}
+                      transition={{ delay: 0.1 * (idx % 3 + 1), duration: duration.compact, ease: easing.decelerate }}
                       className="md:col-span-4"
                     >
                       <SketchCard
                         sketch={sketch}
                         onClick={handleSketchClick}
+                        lazyDelay={idx < 4 ? 0 : 100}
                       />
                     </motion.div>
                   ))}
@@ -152,6 +158,7 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
         </section>
       </motion.main>
 
+      <FESToast />
       <Footer theme={theme} setTheme={setTheme} />
     </div>
   );
