@@ -9,7 +9,7 @@
 
 ## Configuration
 
-Edit the [`sitemeta.json`](https://github.com/prjctimg/sketchbook) file to configure your sketchbook:
+Edit the [`sitemeta.json`](https://github.com/prjctimg/sketchbook/blob/main/sitemeta.json) file to configure your sketchbook:
 
 ```jsonc
 {
@@ -45,6 +45,15 @@ The first GitHub comment on a gist (by the gist owner) becomes the sketch descri
 >
 > See  [Optimizing p5.js code (wiki)](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
 
-> ### License
+There's also [a nice "terminal-first" workflow  for developing sketches and publishing to your sketchbook using Neovim](https://prjctimg.me/blg/how-i-use-neovim-to-run-my-skchbk) and the [p5.nvim](https://github.com/prjctimg/p5.nvim) plugin.
+
+---
+
+> ## License 📜
 >
-> This is free software software released under the GPL-3.0 license.
+> (c) 2026, [prjctimg](https://prjctimg.me)
+>
+> This is free software, released under the GPL-3.0 license.
+
+---
+---
