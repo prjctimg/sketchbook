@@ -1,9 +1,9 @@
 # sketchbook 🏞️
 
-![skchbk](skchbk.png)
-
-> Gallery to showcase your sketches hosted as GitHub Gists🐙  
+----
+> Showcase p5.js 🌸 sketches hosted on GitHub gists 🎏
 >
+----
 
 ## Configuration
 
