@@ -38,18 +38,13 @@ const sketch = (p) => {
     const noise2 = p.noise(depth * 0.5, time * 0.003, 100) * 0.3 - 0.15;
 
     drawBranch(ex, ey, childLen, swayAngle - spread + noise1, depth + 1, maxDepth, time);
-
-
     drawBranch(ex, ey, childLen, swayAngle + spread + noise2, depth + 1, maxDepth, time);
-    p.noLoop()
   }
 
   p.draw = () => {
     p.background(0, 0, 10);
     const maxDepth = 9;
     const trunkLen = p.height * 0.25;
-
-
     drawBranch(p.width / 2, p.height, trunkLen, -p.HALF_PI, 1, maxDepth, p.frameCount);
   };
 

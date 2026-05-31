@@ -1,75 +1,94 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { NextReactP5Wrapper } from '@p5-wrapper/next';
+import p5 from 'p5';
 
 interface P5WrapperProps {
   sketch?: (p: any) => void;
   className?: string;
   cdnUrls?: string[];
   code?: string;
+  renderMode?: 'auto' | 'instance' | 'global';
 }
 
-function parseCdnPackagesFromCode(code: string): string[] {
-  if (!code) return [];
-
-  const packages: string[] = [];
-  const lines = code.split('\n');
-
-  const depsPattern = [
-    /^\/\/\s*deps:\s*(.+)$/i,
-    /^\/\*\s*deps:\s*(.+?)\s*\*\/$/i,
-  ];
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    for (const pattern of depsPattern) {
-      const match = trimmed.match(pattern);
-      if (match) {
-        const pkgs = match[1].split(',').map(p => p.trim()).filter(Boolean);
-        packages.push(...pkgs);
-      }
+function loadScript(url: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${url}"]`)) {
+      resolve();
+      return;
     }
-  }
-
-  return [...new Set(packages)];
+    const s = document.createElement('script');
+    s.src = url;
+    s.onload = () => resolve();
+    s.onerror = () => reject(new Error(`Failed to load ${url}`));
+    document.head.appendChild(s);
+  });
 }
 
-function packageToCdnUrl(pkg: string): string | null {
-  const jsdelivr = `https://cdn.jsdelivr.net/npm/${pkg}`;
-  const unpkg = `https://unpkg.com/${pkg}`;
+function GlobalSketch({ code, cdnUrls = [], className }: {
+  code: string;
+  cdnUrls?: string[];
+  className?: string;
+}) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const p5Ref = useRef<any>(null);
 
-  if (pkg.includes('/')) {
-    return jsdelivr;
-  }
-
-  return unpkg;
-}
-
-export const P5Wrapper = React.memo(({ sketch, className, cdnUrls = [], code }: P5WrapperProps) => {
   useEffect(() => {
-    const externalUrls = cdnUrls.filter(
-      url => !url.includes('p5.js') && !url.includes('p5.min.js')
-    );
+    if (!code) return;
+    const container = containerRef.current;
+    if (!container) return;
 
-    const codePackages = code ? parseCdnPackagesFromCode(code) : [];
+    let cancelled = false;
 
-    const codeCdnUrls = codePackages
-      .map(pkg => packageToCdnUrl(pkg))
-      .filter((url): url is string => url !== null);
-
-    const allCdnUrls = [...new Set([...externalUrls, ...codeCdnUrls])];
-
-    for (const url of allCdnUrls) {
-      if (!document.querySelector(`script[src="${url}"]`)) {
-        const script = document.createElement('script');
-        script.src = url;
-        script.async = true;
-        script.onerror = () => console.warn(`Failed to load ${url}`);
-        document.head.appendChild(script);
+    (async () => {
+      const deps = cdnUrls.filter(url => !/p5(\.min)?\.js/.test(url));
+      for (const url of deps) {
+        try { await loadScript(url); } catch (e) {
+          console.warn('Failed to load dep:', url, e);
+        }
       }
+      if (cancelled) return;
+
+      container.innerHTML = '';
+      const script = document.createElement('script');
+      script.textContent = code;
+      container.appendChild(script);
+
+      p5Ref.current = new p5();
+    })();
+
+    return () => {
+      cancelled = true;
+      if (p5Ref.current) {
+        p5Ref.current.remove();
+        p5Ref.current = null;
+      }
+    };
+  }, [code, cdnUrls]);
+
+  return <div ref={containerRef} className={className} />;
+}
+
+function isGlobalMode(code: string): boolean {
+  return /\bfunction\s+(setup|draw|preload)\s*\(/m.test(code) &&
+         !/\bconst\s+sketch\s*=\s*(\(|function)/.test(code);
+}
+
+export const P5Wrapper = React.memo(({ sketch, className, cdnUrls = [], code, renderMode = 'auto' }: P5WrapperProps) => {
+  const useGlobal = renderMode === 'global' || (renderMode === 'auto' && !!code && isGlobalMode(code));
+
+  useEffect(() => {
+    if (useGlobal) return;
+    const urls = cdnUrls.filter(url => !/p5(\.min)?\.js/.test(url));
+    for (const url of urls) {
+      loadScript(url).catch(e => console.warn('Failed to load CDN script:', url, e));
     }
-  }, [cdnUrls, code]);
+  }, [useGlobal, cdnUrls]);
+
+  if (useGlobal && code) {
+    return <GlobalSketch code={code} cdnUrls={cdnUrls} className={className} />;
+  }
 
   if (!sketch) {
     return <div className={className} />;

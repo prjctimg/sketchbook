@@ -1,14 +1,14 @@
 {
   "site": {
     "title": "skchbk",
-    "description": "Your description",
-    "url": "https://example.com"
+    "description": "A generative p5.js artifact archive.",
+    "url": "https://skchbk.prjctimg.me"
   },
   "github": {
-    "username": "your-username",
-    "gistIncludeMarker": "// @sketch"
+    "username": "skchr",
+    "gistIncludeMarker": ""
   },
   "ga": {
-    "measurementId": ""
+    "measurementId": "G-4STDNK2PXC"
   }
 }

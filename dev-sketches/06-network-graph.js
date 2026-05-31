@@ -79,7 +79,6 @@ const sketch = (p) => {
       });
     }
 
-    p.frameRate(60)
     generateConnections();
     rebuildLayout();
 
@@ -129,7 +128,6 @@ const sketch = (p) => {
       p.noStroke();
       p.circle(n.pos.x, n.pos.y, 5 + 3 * p.sin(time + n.hue));
     }
-    // p.noLoop()
   };
 
   p.mouseClicked = () => {
