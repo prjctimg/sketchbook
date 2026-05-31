@@ -42,59 +42,59 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
     <div className="min-h-screen flex flex-col transition-colors duration-300">
       <Navbar />
 
-      <motion.main
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: duration.medium, ease: easing.standard }}
-        className="flex-grow"
-      >
-        <Hero />
+      <SequentialRenderProvider total={sketches.length} delay={400}>
+        <motion.main
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: duration.medium, ease: easing.standard }}
+          className="flex-grow"
+        >
+          <Hero />
 
-        {sketches.length > 0 && (
-          <section className="bg-surface-container-low px-base py-24 md:px-base lg:px-base mb-12 overflow-hidden border-b border-outline/10">
-            <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-24 items-center">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.2, duration: duration.medium, ease: easing.decelerate }}
-                className="lg:col-span-3 space-y-8"
-              >
-                <div className="mb-3">
-                  <span className="font-mono-sm uppercase tracking-widest opacity-40 bg-tertiary-container px-3 py-1 text-on-surface font-normal rounded-lg">RECENT</span>
-                </div>
-                <h2 className="font-mono text-[2rem] md:text-[2rem] font-normal editorial-headline uppercase">
-                  {sketches[0].title.split(' ').slice(0, 2).join(' ')}<br />
-                  {sketches[0].title.split(' ').slice(2).join(' ')}
-                </h2>
-                <motion.button
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.97 }}
-                  transition={{ duration: duration.micro, ease: easing.standard }}
-                  onClick={() => handleSketchClick(sketches[0].id)}
-                  className="bg-primary text-on-primary font-mono-sm uppercase tracking-widest px-10 py-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+          {sketches.length > 0 && (
+            <section className="bg-surface-container-low px-base py-24 md:px-base lg:px-base mb-12 overflow-hidden border-b border-outline/10">
+              <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-5 gap-24 items-center">
+                <motion.div
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.2, duration: duration.medium, ease: easing.decelerate }}
+                  className="lg:col-span-3 space-y-8"
                 >
-                  Preview
-                </motion.button>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.3, duration: duration.compact, ease: easing.decelerate }}
-                className="lg:col-span-2 relative rounded-xl overflow-hidden"
-              >
-                <SketchCard sketch={sketches[0]} onClick={handleSketchClick} className="w-full h-full !mb-0 border-none pb-0" index={0} />
-              </motion.div>
-            </div>
-          </section>
-        )}
+                  <div className="mb-3">
+                    <span className="font-mono-sm uppercase tracking-widest opacity-40 bg-tertiary-container px-3 py-1 text-on-surface font-normal rounded-lg">RECENT</span>
+                  </div>
+                  <h2 className="font-mono text-[2rem] md:text-[2rem] font-normal editorial-headline uppercase">
+                    {sketches[0].title.split(' ').slice(0, 2).join(' ')}<br />
+                    {sketches[0].title.split(' ').slice(2).join(' ')}
+                  </h2>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.97 }}
+                    transition={{ duration: duration.micro, ease: easing.standard }}
+                    onClick={() => handleSketchClick(sketches[0].id)}
+                    className="bg-primary text-on-primary font-mono-sm uppercase tracking-widest px-10 py-4 rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                  >
+                    Preview
+                  </motion.button>
+                </motion.div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.3, duration: duration.compact, ease: easing.decelerate }}
+                  className="lg:col-span-2 relative rounded-xl overflow-hidden"
+                >
+                  <SketchCard sketch={sketches[0]} onClick={handleSketchClick} className="w-full h-full !mb-0 border-none pb-0" index={0} />
+                </motion.div>
+              </div>
+            </section>
+          )}
 
-        <section className="px-base py-16 md:px-base lg:px-base mb-32">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex justify-between items-center mb-10 border-b border-outline/10 pb-6">
-              <h3 className="font-mono text-sm uppercase tracking-widest opacity-60">Gallery</h3>
-            </div>
+          <section className="px-base py-16 md:px-base lg:px-base mb-32">
+            <div className="max-w-7xl mx-auto">
+              <div className="flex justify-between items-center mb-10 border-b border-outline/10 pb-6">
+                <h3 className="font-mono text-sm uppercase tracking-widest opacity-60">Gallery</h3>
+              </div>
 
-            <SequentialRenderProvider total={sketches.length} delay={400}>
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                 {sketches.length > 0 ? (
                   <>
@@ -150,10 +150,10 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
                   </div>
                 )}
               </div>
-            </SequentialRenderProvider>
-          </div>
-        </section>
-      </motion.main>
+            </div>
+          </section>
+        </motion.main>
+      </SequentialRenderProvider>
 
       <Footer theme={theme} setTheme={setTheme} />
     </div>
