@@ -1,5 +1,5 @@
-import { getSketches } from '@/app/_data/sketches';
-import { SketchDetail } from '@/app/_components/SketchDetail';
+import { getSketches } from '@/lib/sketches';
+import { SketchDetail } from '@/components/SketchDetail';
 import { notFound } from 'next/navigation';
 
 export default async function SketchPage({ params }: { params: Promise<{ id: string }> }) {

@@ -1,5 +1,5 @@
-import { getSketches } from '@/app/_data/sketches';
-import HomeClient from './HomeClient';
+import { getSketches } from '@/lib/sketches';
+import HomeClient from '@/components/layout/HomeClient';
 
 export default async function HomePage() {
   const sketches = await getSketches();

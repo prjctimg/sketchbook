@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2, RotateCcw, Github, Code as CodeIcon, ChevronUp, ChevronDown } from 'lucide-react';
-import { SketchMetadata } from '@/app/types';
+import { SketchMetadata } from '@/types';
 import { P5Wrapper } from './P5Wrapper';
-import { wrapSketchCode } from '@/app/_lib/sketchUtils';
-import { findUsedP5Symbols } from '@/app/_lib/p5ApiSymbols';
-import { easing, duration } from '@/app/_lib/motion';
+import { wrapSketchCode } from '@/lib/sketchUtils';
+import { findUsedP5Symbols } from '@/lib/p5ApiSymbols';
+import { easing, duration } from '@/lib/motion';
 import { NoLoopWarning } from './FESBanner';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
@@ -29,10 +29,6 @@ interface SketchDetailProps {
 export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, nextId }) => {
   const router = useRouter();
   const [reloadKey, setReloadKey] = useState(0);
-
-  const handleBack = useCallback(() => router.push('/'), [router]);
-  const handlePrev = useCallback(() => { if (prevId) router.push(`/sketch/${prevId}`); }, [prevId, router]);
-  const handleNext = useCallback(() => { if (nextId) router.push(`/sketch/${nextId}`); }, [nextId, router]);
   const [showCode, setShowCode] = useState(false);
   const [showTechDetails, setShowTechDetails] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -72,11 +68,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
 
   const totalSymbols = usedSymbols.length;
 
-  const handleReload = useCallback(() => {
-    setReloadKey(prev => prev + 1);
-  }, []);
-
-  const toggleFullscreen = useCallback(async () => {
+  const toggleFullscreen = async () => {
     if (!document.fullscreenElement) {
       await canvasContainerRef.current?.requestFullscreen();
       setIsFullscreen(true);
@@ -84,7 +76,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
       await document.exitFullscreen();
       setIsFullscreen(false);
     }
-  }, []);
+  };
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -94,18 +86,13 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  const runCode = useCallback(() => {
-    setActiveCode(editedCode);
-    setReloadKey(prev => prev + 1);
-  }, [editedCode]);
-
   return (
     <div className="min-h-screen bg-surface">
       <div className="px-base py-8 flex flex-col md:flex-row md:items-start max-w-[1600px] mx-auto">
         {/* Sidebar / Navigation */}
         <div className="md:w-1/12 mb-8 md:mb-0 flex flex-col space-y-4">
           <button
-            onClick={handleBack}
+            onClick={() => router.push('/')}
             className="flex items-center space-x-2 font-mono-sm uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity rounded-lg"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -114,7 +101,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
           {(!!prevId || !!nextId) && (
             <div className="flex space-x-2">
               <motion.button
-                onClick={handlePrev}
+                onClick={() => { if (prevId) router.push(`/sketch/${prevId}`); }}
                 disabled={!!!prevId}
                 whileHover={!!prevId ? { scale: 1.02 } : {}}
                 whileTap={!!prevId ? { scale: 0.97 } : {}}
@@ -125,7 +112,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                 <span>Prev</span>
               </motion.button>
               <motion.button
-                onClick={handleNext}
+                onClick={() => { if (nextId) router.push(`/sketch/${nextId}`); }}
                 disabled={!!!nextId}
                 whileHover={!!nextId ? { scale: 1.02 } : {}}
                 whileTap={!!nextId ? { scale: 0.97 } : {}}
@@ -174,7 +161,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
               {/* Controls Overlaid on Canvas */}
               <div className="absolute bottom-6 right-6 flex space-x-2">
                 <motion.button
-                  onClick={handleReload}
+                  onClick={() => setReloadKey(prev => prev + 1)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ duration: duration.micro, ease: easing.standard }}
@@ -224,7 +211,10 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
-                        onClick={runCode}
+                        onClick={() => {
+                          setActiveCode(editedCode);
+                          setReloadKey(prev => prev + 1);
+                        }}
                         className="font-mono-xs uppercase tracking-widest px-3 py-1.5 bg-primary text-on-primary transition-colors hover:bg-primary/90"
                       >
                         Play

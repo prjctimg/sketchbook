@@ -57,9 +57,9 @@ export const Footer: React.FC<FooterProps> = ({ theme, setTheme }) => {
 
         {/* Copyright Line */}
         <div className="flex items-center space-x-2 font-mono text-xs opacity-70 uppercase tracking-widest">
-          <a href={WHAT_IS_SKETCHBOOK_URL} className="hover:text-primary transition-colors">What's a sketchbook ?</a>
+          <a href={WHAT_IS_SKETCHBOOK_URL} className="hover:text-primary transition-colors">What&apos;s a sketchbook ?</a>
           <span>·</span>
-          <span>© {new Date().getFullYear()},</span>
+          <span>&copy; {new Date().getFullYear()},</span>
           <a href={AUTHOR_GITHUB_URL} className="hover:text-primary transition-colors">
             <Github size={14} />
           </a>

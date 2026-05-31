@@ -3,23 +3,18 @@
 import React, { useMemo } from 'react';
 import { motion } from 'motion/react';
 import { ArrowUpRight, AlertTriangle } from 'lucide-react';
-import { SketchMetadata } from '@/app/types';
+import { SketchMetadata } from '@/types';
 import { P5Wrapper } from './P5Wrapper';
-import { wrapSketchCode } from '@/app/_lib/sketchUtils';
-import { easing, duration } from '@/app/_lib/motion';
+import { wrapSketchCode, hasNoLoop } from '@/lib/sketchUtils';
+import { easing, duration } from '@/lib/motion';
 import { P5ErrorBoundary } from './P5ErrorBoundary';
-import { useLazyLoad } from '@/app/_hooks/useLazyLoad';
+import { useLazyLoad } from '@/hooks/useLazyLoad';
 
 interface SketchCardProps {
   sketch: SketchMetadata;
   onClick: (id: string) => void;
   className?: string;
   lazyDelay?: number;
-}
-
-function hasNoLoop(code: string | undefined): boolean {
-  if (!code) return false;
-  return /\bnoLoop\s*\(/.test(code);
 }
 
 export const SketchCard: React.FC<SketchCardProps> = ({ sketch, onClick, className, lazyDelay = 0 }) => {

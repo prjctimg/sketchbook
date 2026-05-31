@@ -1,5 +1,3 @@
-import p5 from 'p5';
-
 export interface P5ApiEntry {
   name: string;
   category: string;
@@ -58,10 +56,6 @@ const CATEGORIES: CategoryRule[] = [
     test: (n) => /^(createShader|loadShader|shader|resetShader|createFilterShader)/.test(n),
   },
   {
-    label: 'Sound',
-    test: (n) => /^(audio|sound|amplitude|fft|oscillator|envelope|pulse|monoSynth|duoSynth|polySynth|part|score|soundLoop|soundFile|soundRecorder|distortion|reverb|peakDetect|userStartAudio|getAudioContext|soundFormats)/.test(n) || /^create(Convolver|Filter|Compressor|Delay|Reverb)$/.test(n),
-  },
-  {
     label: 'DOM',
     test: (n) => /^(select|selectAll|drop|parent|style|position|size|show|hide|addClass|removeClass|toggleClass|child|attribute|value|html|center)/.test(n) || /^create(P|Div|Span|Input|Button|Checkbox|Select|Radio|Slider|ColorPicker|FileInput|Video|Audio|Capture|Writer)$/.test(n),
   },
@@ -82,7 +76,8 @@ function categorizeFunction(name: string): string {
   return 'General';
 }
 
-function introspectP5Symbols(): P5ApiEntry[] {
+async function introspectP5Symbols(): Promise<P5ApiEntry[]> {
+  const { default: p5 } = await import('p5') as any;
   const proto = p5.prototype;
   const entries: P5ApiEntry[] = [];
   const seen = new Set<string>();
@@ -109,13 +104,27 @@ function introspectP5Symbols(): P5ApiEntry[] {
   return entries;
 }
 
-export const P5_SYMBOLS: P5ApiEntry[] = introspectP5Symbols();
+let _symbols: P5ApiEntry[] | null = null;
+let _initPromise: Promise<void> | null = null;
+
+async function initSymbols(): Promise<void> {
+  if (_symbols) return;
+  _symbols = await introspectP5Symbols();
+}
+
+function getP5Symbols(): P5ApiEntry[] {
+  if (!_symbols && !_initPromise && typeof window !== 'undefined') {
+    _initPromise = initSymbols().catch(() => { _symbols = []; });
+  }
+  return _symbols ?? [];
+}
 
 export function findUsedP5Symbols(code: string): UsedP5Symbol[] {
+  const symbols = getP5Symbols();
   const result: UsedP5Symbol[] = [];
   const seen = new Set<string>();
 
-  for (const entry of P5_SYMBOLS) {
+  for (const entry of symbols) {
     if (seen.has(entry.name)) continue;
 
     const escaped = entry.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');

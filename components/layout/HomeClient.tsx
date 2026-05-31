@@ -3,13 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
-import { Navbar } from '@/app/_components/Navbar';
-import { Hero } from '@/app/_components/Hero';
-import { SketchCard } from '@/app/_components/SketchCard';
-import { SketchMetadata } from '@/app/types';
-import { Footer } from '@/app/_components/Footer';
-import { easing, duration } from '@/app/_lib/motion';
-import { FESToast } from '@/app/_components/FESBanner';
+import { Navbar } from '@/components/Navbar';
+import { Hero } from '@/components/Hero';
+import { SketchCard } from '@/components/SketchCard';
+import { SketchMetadata } from '@/types';
+import { Footer } from '@/components/Footer';
+import { easing, duration } from '@/lib/motion';
 
 export default function HomeClient({ sketches }: { sketches: SketchMetadata[] }) {
   const router = useRouter();
@@ -158,7 +157,6 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
         </section>
       </motion.main>
 
-      <FESToast />
       <Footer theme={theme} setTheme={setTheme} />
     </div>
   );

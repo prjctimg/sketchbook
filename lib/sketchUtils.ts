@@ -25,3 +25,8 @@ export const wrapSketchCode = (code: string) => {
   wrapCache.set(code, wrappedFn);
   return wrappedFn;
 };
+
+export function hasNoLoop(code: string | undefined): boolean {
+  if (!code) return false;
+  return /\bnoLoop\s*\(/.test(code);
+}

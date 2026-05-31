@@ -4,7 +4,7 @@ import React from 'react';
 import { motion } from 'motion/react';
 import Link from 'next/link';
 import siteMeta from '@/sitemeta.json';
-import { easing, duration } from '@/app/_lib/motion';
+import { easing, duration } from '@/lib/motion';
 
 export const Navbar: React.FC = () => {
   return (

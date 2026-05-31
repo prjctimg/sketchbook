@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef } from 'react';
 import { NextReactP5Wrapper } from '@p5-wrapper/next';
-import p5 from 'p5';
 
 interface P5WrapperProps {
   sketch?: (p: any) => void;
@@ -55,6 +54,7 @@ function GlobalSketch({ code, cdnUrls = [], className }: {
       script.textContent = code;
       container.appendChild(script);
 
+      const { default: p5 } = await import('p5') as any;
       p5Ref.current = new p5();
     })();
 
@@ -75,7 +75,7 @@ function isGlobalMode(code: string): boolean {
          !/\bconst\s+sketch\s*=\s*(\(|function)/.test(code);
 }
 
-export const P5Wrapper = React.memo(({ sketch, className, cdnUrls = [], code, renderMode = 'auto' }: P5WrapperProps) => {
+export const P5Wrapper = ({ sketch, className, cdnUrls = [], code, renderMode = 'auto' }: P5WrapperProps) => {
   const useGlobal = renderMode === 'global' || (renderMode === 'auto' && !!code && isGlobalMode(code));
 
   useEffect(() => {
@@ -99,4 +99,4 @@ export const P5Wrapper = React.memo(({ sketch, className, cdnUrls = [], code, re
       <NextReactP5Wrapper sketch={sketch} />
     </div>
   );
-});
+};
