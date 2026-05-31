@@ -25,6 +25,8 @@ export const metadata: Metadata = {
   robots: "index, follow",
 };
 
+const faviconHref = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${siteMeta.faviconEmoji}</text></svg>`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <link rel="icon" href={faviconHref} />
         <script
           dangerouslySetInnerHTML={{
             __html: `

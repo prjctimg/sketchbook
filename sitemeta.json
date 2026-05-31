@@ -7,6 +7,7 @@
     "keywords": "p5.js, generative art, creative coding, sketchbook",
     "twitterHandle": "@your-handle"
   },
+  "faviconEmoji": "🖌",
   "github": {
     "username": "your-username",
     "gistIncludeMarker": "// @sketch"
