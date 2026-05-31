@@ -63,7 +63,7 @@ function GlobalSketch({ code, cdnUrls = [], className }: {
       container.appendChild(script);
 
       const p5 = (window as any).p5;
-      if (p5) p5Ref.current = new p5();
+      if (p5) p5Ref.current = new p5(null, container);
     })();
 
     return () => {
@@ -85,13 +85,6 @@ function isGlobalMode(code: string): boolean {
 
 export const P5Wrapper = ({ sketch, className, cdnUrls = [], code, renderMode = 'auto' }: P5WrapperProps) => {
   const useGlobal = renderMode === 'global' || (renderMode === 'auto' && !!code && isGlobalMode(code));
-
-  useEffect(() => {
-    import('p5').then((m: any) => {
-      const p5 = m.default || m;
-      p5.disableFriendlyErrors = true;
-    }).catch(() => {});
-  }, []);
 
   useEffect(() => {
     if (useGlobal) return;
