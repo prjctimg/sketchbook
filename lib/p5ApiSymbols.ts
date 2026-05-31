@@ -56,6 +56,10 @@ const CATEGORIES: CategoryRule[] = [
     test: (n) => /^(createShader|loadShader|shader|resetShader|createFilterShader)/.test(n),
   },
   {
+    label: 'Sound',
+    test: (n) => /^(audio|sound|amplitude|fft|oscillator|envelope|pulse|monoSynth|duoSynth|polySynth|part|score|soundLoop|soundFile|soundRecorder|distortion|reverb|peakDetect|userStartAudio|getAudioContext|soundFormats)/.test(n) || /^create(Convolver|Filter|Compressor|Delay|Reverb)$/.test(n),
+  },
+  {
     label: 'DOM',
     test: (n) => /^(select|selectAll|drop|parent|style|position|size|show|hide|addClass|removeClass|toggleClass|child|attribute|value|html|center)/.test(n) || /^create(P|Div|Span|Input|Button|Checkbox|Select|Radio|Slider|ColorPicker|FileInput|Video|Audio|Capture|Writer)$/.test(n),
   },

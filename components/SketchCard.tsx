@@ -57,7 +57,6 @@ export const SketchCard: React.FC<SketchCardProps> = ({ sketch, onClick, classNa
                 className="w-full h-full flex items-center justify-center scale-[0.5] origin-center"
                 cdnUrls={sketch.cdnUrls}
                 code={sketch.code}
-                renderMode="instance"
               />
             </P5ErrorBoundary>
           </div>

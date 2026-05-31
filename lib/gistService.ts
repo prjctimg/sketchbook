@@ -155,7 +155,7 @@ export async function fetchGistSketches(): Promise<SketchMetadata[]> {
         id: gist.id,
         title: generateTitleFromDescription(gist.description, gist.id),
         description: additionalInfo || description,
-        date: formatDate(new Date(gist.created_at)),
+        date: formatDate(gist.created_at),
         tags: [] as string[],
         thumbnail,
         technicalDetails: {

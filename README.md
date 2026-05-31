@@ -1,10 +1,12 @@
+# sketchbook
+
 ![skchbk](skchbk.png)
 
-**skchbk** — a Next.js gallery for p5.js generative art sketches loaded from GitHub Gists.
+> A Next.js gallery for p5.js sketches loaded from GitHub Gists.
 
 ## Configuration
 
-Edit `sitemeta.json` to set up your instance:
+Edit the `sitemeta.json` file to configure your sketchbook:
 
 ```jsonc
 {
@@ -14,10 +16,8 @@ Edit `sitemeta.json` to set up your instance:
     "url": "https://example.com"  // Deployed URL
   },
   "github": {
-    "username": "your-github-username",  // GitHub user whose gists to load
-    "gistIncludeMarker": ""             // If set, only include gists whose
-                                        // sketch.js starts with this string.
-                                        // Empty = include all gists.
+    "username": "your-github-username",
+    "gistIncludeMarker": "// @sketch"  // Only include gists whose sketch.js starts with this string
   },
   "ga": {
     "measurementId": ""  // Google Analytics 4 measurement ID (optional)
@@ -25,22 +25,37 @@ Edit `sitemeta.json` to set up your instance:
 }
 ```
 
-### Gist structure
+### Using GitHub Gists
 
 Each gist must contain a `sketch.js` file. Optional files:
 
 | File | Purpose |
 |------|---------|
-| `sketch.js` | p5.js sketch code (instance mode) |
 | `p5.json` | Dependency definitions (`libs` field) |
-| `thumbnail.png` / `thumbnail.jpg` | Custom thumbnail override |
 
 The first GitHub comment on a gist (by the gist owner) becomes the sketch description.
 
-### Dev mode
+> [!caution]
+> Rendering is expensive. If your sketch is making the preview page lag, do most work in `setup()`, lower `frameRate()`, or call `noLoop()` at the end of `draw()`.
+>
+> See [Optimizing p5.js Code for Performance](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
+
+### Dev Mode
 
 ```bash
 DEV_SKETCHES_DIR=dev-sketches npm run dev
 ```
 
-JavaScript files in `dev-sketches/` are loaded as local sketches (no gist dependency).
+Place `sketch.js` files in `dev-sketches/` for local development without GitHub Gists.
+
+Add a `p5.json` file in `dev-sketches/` to declare global dependencies:
+
+```json
+{
+  "libs": { "d3": "7" }
+}
+```
+
+## License
+
+(c) 2026, prjctimg — GPL-3.0

@@ -1,8 +1,23 @@
 const wrapCache = new Map<string, (p: any) => void>();
 
+const GLOBAL_MODE_RE = /\bfunction\s+(setup|draw|preload)\s*\(/m;
+const WARNED = new Set<string>();
+
 export const wrapSketchCode = (code: string) => {
   if (wrapCache.has(code)) {
     return wrapCache.get(code)!;
+  }
+
+  if (GLOBAL_MODE_RE.test(code) && !WARNED.has(code)) {
+    WARNED.add(code);
+    console.warn(
+      '[skchbk] Global-mode p5 sketch detected. Wrap your code in instance mode:\n' +
+      '  const sketch = (p) => {\n' +
+      '    p.setup = () => { p.createCanvas(400, 400); };\n' +
+      '    p.draw = () => { p.background(220); };\n' +
+      '  };\n' +
+      'See: https://p5js.org/examples/instance-mode.html'
+    );
   }
 
   const wrappedFn = (p: any) => {
