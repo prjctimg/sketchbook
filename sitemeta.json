@@ -1,14 +1,14 @@
 {
   "site": {
     "title": "skchbk",
-    "description": "A generative p5.js artifact archive.",
-    "url": "https://skchbk.prjctimg.me"
+    "description": "Your description",
+    "url": "https://example.com",
+    "image": "/og-image.png",
+    "keywords": "p5.js, generative art, creative coding, sketchbook",
+    "twitterHandle": "@your-handle"
   },
   "github": {
-    "username": "skchr",
-    "gistIncludeMarker": ""
-  },
-  "ga": {
-    "measurementId": "G-4STDNK2PXC"
+    "username": "your-username",
+    "gistIncludeMarker": "// @sketch"
   }
 }

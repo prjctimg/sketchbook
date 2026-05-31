@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2, RotateCcw, Github, Code as CodeIcon, ChevronUp, ChevronDown } from 'lucide-react';
@@ -10,6 +10,7 @@ import { wrapSketchCode } from '@/lib/sketchUtils';
 import { findUsedP5Symbols } from '@/lib/p5ApiSymbols';
 import { easing, duration } from '@/lib/motion';
 import { NoLoopWarning } from './FESBanner';
+import { Footer } from '@/components/Footer';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import Markdown, { Components } from 'react-markdown';
@@ -28,7 +29,28 @@ interface SketchDetailProps {
 
 export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, nextId }) => {
   const router = useRouter();
+  const [theme, setTheme] = useState<'system' | 'light' | 'dark'>('system');
   const [reloadKey, setReloadKey] = useState(0);
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme') as 'system' | 'light' | 'dark' | null;
+    if (savedTheme) setTheme(savedTheme);
+  }, []);
+
+  useEffect(() => {
+    const root = window.document.documentElement;
+    if (theme === 'dark') root.classList.add('dark');
+    else if (theme === 'light') root.classList.remove('dark');
+    else {
+      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      root.classList.toggle('dark', systemDark);
+    }
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
+  const handleBack = useCallback(() => router.push('/'), [router]);
+  const handlePrev = useCallback(() => { if (prevId) router.push(`/sketch/${prevId}`); }, [prevId, router]);
+  const handleNext = useCallback(() => { if (nextId) router.push(`/sketch/${nextId}`); }, [nextId, router]);
   const [showCode, setShowCode] = useState(false);
   const [showTechDetails, setShowTechDetails] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -68,7 +90,11 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
 
   const totalSymbols = usedSymbols.length;
 
-  const toggleFullscreen = async () => {
+  const handleReload = useCallback(() => {
+    setReloadKey(prev => prev + 1);
+  }, []);
+
+  const toggleFullscreen = useCallback(async () => {
     if (!document.fullscreenElement) {
       await canvasContainerRef.current?.requestFullscreen();
       setIsFullscreen(true);
@@ -76,7 +102,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
       await document.exitFullscreen();
       setIsFullscreen(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     const handleFullscreenChange = () => {
@@ -86,13 +112,18 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
+  const runCode = useCallback(() => {
+    setActiveCode(editedCode);
+    setReloadKey(prev => prev + 1);
+  }, [editedCode]);
+
   return (
-    <div className="min-h-screen bg-surface">
-      <div className="px-base py-8 flex flex-col md:flex-row md:items-start max-w-[1600px] mx-auto">
+    <div className="min-h-screen bg-surface flex flex-col">
+      <div className="px-base py-8 flex flex-col md:flex-row md:items-start max-w-[1600px] mx-auto flex-grow">
         {/* Sidebar / Navigation */}
         <div className="md:w-1/12 mb-8 md:mb-0 flex flex-col space-y-4">
           <button
-            onClick={() => router.push('/')}
+            onClick={handleBack}
             className="flex items-center space-x-2 font-mono-sm uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity rounded-lg"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -101,7 +132,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
           {(!!prevId || !!nextId) && (
             <div className="flex space-x-2">
               <motion.button
-                onClick={() => { if (prevId) router.push(`/sketch/${prevId}`); }}
+                onClick={handlePrev}
                 disabled={!!!prevId}
                 whileHover={!!prevId ? { scale: 1.02 } : {}}
                 whileTap={!!prevId ? { scale: 0.97 } : {}}
@@ -112,7 +143,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                 <span>Prev</span>
               </motion.button>
               <motion.button
-                onClick={() => { if (nextId) router.push(`/sketch/${nextId}`); }}
+                onClick={handleNext}
                 disabled={!!!nextId}
                 whileHover={!!nextId ? { scale: 1.02 } : {}}
                 whileTap={!!nextId ? { scale: 0.97 } : {}}
@@ -135,7 +166,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
             transition={{ duration: duration.medium, ease: easing.decelerate }}
             className="lg:col-span-8 flex justify-between items-end mb-4 border-b border-outline/10 pb-4"
           >
-            <h2 className="font-mono text-2xl lg:text-4xl font-medium tracking-tighter uppercase">{sketch.title}</h2>
+            <h2 className="font-mono text-xl lg:text-2xl font-medium tracking-tighter uppercase">{sketch.title}</h2>
             <div className="text-right">
               <span className="font-mono-xs uppercase tracking-widest opacity-40 block mb-1">sketched on</span>
               <span className="font-mono-sm font-medium">{sketch.date}</span>
@@ -161,7 +192,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
               {/* Controls Overlaid on Canvas */}
               <div className="absolute bottom-6 right-6 flex space-x-2">
                 <motion.button
-                  onClick={() => setReloadKey(prev => prev + 1)}
+                  onClick={handleReload}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
                   transition={{ duration: duration.micro, ease: easing.standard }}
@@ -211,10 +242,7 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                     </div>
                     <div className="flex items-center space-x-2">
                       <button
-                        onClick={() => {
-                          setActiveCode(editedCode);
-                          setReloadKey(prev => prev + 1);
-                        }}
+                        onClick={runCode}
                         className="font-mono-xs uppercase tracking-widest px-3 py-1.5 bg-primary text-on-primary transition-colors hover:bg-primary/90"
                       >
                         Play
@@ -287,15 +315,9 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                     className="overflow-hidden"
                   >
                     <div className="pt-4 space-y-6">
-                      <div className="grid grid-cols-2 gap-y-5">
-                        <div>
-                          <span className="font-mono-xs uppercase tracking-widest opacity-40 block">Rendering mode</span>
-                          <span className="font-mono-sm">{sketch.technicalDetails.rendering}</span>
-                        </div>
-                        <div>
-                          <span className="font-mono-xs uppercase tracking-widest opacity-40 block">Uses</span>
-                          <span className="font-mono-sm">{sketch.technicalDetails.dependencies.join(', ')}</span>
-                        </div>
+                      <div>
+                        <span className="font-mono-xs uppercase tracking-widest opacity-40 block">Uses</span>
+                        <span className="font-mono-sm">{sketch.technicalDetails.dependencies.join(', ')}</span>
                       </div>
 
                       {groupedSymbols.length > 0 && (
@@ -357,6 +379,47 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
           </div>
         </div>
       </div>
+
+      {/* Bottom pagination */}
+      <div className="px-base py-8 border-t border-outline/10">
+        <div className="max-w-[1600px] mx-auto flex items-center justify-between">
+          <button
+            onClick={handleBack}
+            className="flex items-center space-x-2 font-mono-sm uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Gallery</span>
+          </button>
+          {(!!prevId || !!nextId) && (
+            <div className="flex space-x-4">
+              <motion.button
+                onClick={handlePrev}
+                disabled={!!!prevId}
+                whileHover={!!prevId ? { scale: 1.02 } : {}}
+                whileTap={!!prevId ? { scale: 0.97 } : {}}
+                transition={{ duration: duration.micro, ease: easing.standard }}
+                className={`flex items-center space-x-1 font-mono-xs uppercase tracking-widest transition-opacity ${!!prevId ? 'opacity-60 hover:opacity-100' : 'opacity-20 cursor-not-allowed'}`}
+              >
+                <ChevronLeft className="w-3 h-3" />
+                <span>Prev</span>
+              </motion.button>
+              <motion.button
+                onClick={handleNext}
+                disabled={!!!nextId}
+                whileHover={!!nextId ? { scale: 1.02 } : {}}
+                whileTap={!!nextId ? { scale: 0.97 } : {}}
+                transition={{ duration: duration.micro, ease: easing.standard }}
+                className={`flex items-center space-x-1 font-mono-xs uppercase tracking-widest transition-opacity ${!!nextId ? 'opacity-60 hover:opacity-100' : 'opacity-20 cursor-not-allowed'}`}
+              >
+                <span>Next</span>
+                <ChevronRight className="w-3 h-3" />
+              </motion.button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <Footer theme={theme} setTheme={setTheme} />
     </div>
   );
 };

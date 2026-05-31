@@ -1,142 +1,266 @@
-export interface P5ApiEntry {
-  name: string;
-  category: string;
-  type: 'function' | 'constant' | 'property';
-}
-
 export interface UsedP5Symbol {
   name: string;
   category: string;
-  type: 'function' | 'constant' | 'property';
 }
 
-type CategoryRule = {
-  label: string;
-  test: (name: string) => boolean;
-};
-
-const CATEGORIES: CategoryRule[] = [
-  { label: 'Events', test: (n) => /^(mouse|key|touch|device)/.test(n) },
-  { label: 'Lifecycle', test: (n) => /^(setup|draw|preload|windowResized|remove)$/.test(n) },
-  { label: 'I/O', test: (n) => /^(load|save|http)/.test(n) },
-  {
-    label: 'Transform',
-    test: (n) => /^(translate|rotate|rotateX|rotateY|rotateZ|scale|shearX|shearY|pushMatrix|popMatrix|resetMatrix|applyMatrix|printMatrix)/.test(n),
-  },
-  {
-    label: 'Color & Style',
-    test: (n) => /^(fill|noFill|stroke|noStroke|background|color|colorMode|erase|noErase|blendMode|angleMode|ellipseMode|rectMode|arcMode|smooth|noSmooth|strokeCap|strokeJoin|strokeWeight|textureWrap|ambientMaterial|specularMaterial|emissiveMaterial|normalMaterial|shininess|specularColor)/.test(n),
-  },
-  {
-    label: 'Shape',
-    test: (n) => /^(ellipse|circle|arc|rect|square|line|triangle|quad|point|beginShape|endShape|vertex|curveVertex|quadraticVertex|bezierVertex|contour|beginContour|endContour|curve|bezier|curveDetail|curveTightness|curvePoint|curveTangent|bezierPoint|bezierTangent|texture|textureMode)/.test(n),
-  },
-  {
-    label: 'Math',
-    test: (n) => /^(abs|ceil|constrain|dist|exp|floor|fract|lerp|log|mag|map|max|min|norm|pow|round|sq|sqrt|noise|noiseDetail|noiseSeed|random|randomSeed|randomGaussian|sin|cos|tan|atan|atan2|asin|acos|degrees|radians|angleMode)/.test(n),
-  },
-  {
-    label: 'Typography',
-    test: (n) => /^(text|textFont|textSize|textStyle|textAlign|textWidth|textAscent|textDescent|textLeading|textWrap|loadFont)/.test(n),
-  },
-  {
-    label: 'Rendering',
-    test: (n) => /^(createCanvas|resizeCanvas|noCanvas|createGraphics|setAttributes|pixelDensity|displayDensity|print|println|clear)/.test(n),
-  },
-  {
-    label: 'Image',
-    test: (n) => /^(image|createImage|loadImage|imageMode|loadPixels|updatePixels|pixels|filter|blend|copy|get|resize|saveCanvas|saveFrames)/.test(n),
-  },
-  {
-    label: 'Lights & Camera',
-    test: (n) => /^(ambientLight|directionalLight|pointLight|spotLight|lights|noLights|lightFalloff|lightMode|camera|createCamera|setCamera|orbitControl|debugMode|noDebug|perspective|ortho|frustum)/.test(n),
-  },
-  {
-    label: 'Shaders',
-    test: (n) => /^(createShader|loadShader|shader|resetShader|createFilterShader)/.test(n),
-  },
-  {
-    label: 'Sound',
-    test: (n) => /^(audio|sound|amplitude|fft|oscillator|envelope|pulse|monoSynth|duoSynth|polySynth|part|score|soundLoop|soundFile|soundRecorder|distortion|reverb|peakDetect|userStartAudio|getAudioContext|soundFormats)/.test(n) || /^create(Convolver|Filter|Compressor|Delay|Reverb)$/.test(n),
-  },
-  {
-    label: 'DOM',
-    test: (n) => /^(select|selectAll|drop|parent|style|position|size|show|hide|addClass|removeClass|toggleClass|child|attribute|value|html|center)/.test(n) || /^create(P|Div|Span|Input|Button|Checkbox|Select|Radio|Slider|ColorPicker|FileInput|Video|Audio|Capture|Writer)$/.test(n),
-  },
-  {
-    label: 'Vector',
-    test: (n) => /^(createVector|fromAngle|fromAngles|normalize|setMag|limit|heading|angleBetween|dot|cross|random2D|random3D)/.test(n),
-  },
-  {
-    label: 'Creation',
-    test: (n) => n.startsWith('create') && n !== 'createCanvas',
-  },
+const SYMBOLS: [string, string][] = [
+  ['setup', 'Lifecycle'],
+  ['draw', 'Lifecycle'],
+  ['preload', 'Lifecycle'],
+  ['windowResized', 'Lifecycle'],
+  ['remove', 'Lifecycle'],
+  ['mousePressed', 'Events'],
+  ['mouseReleased', 'Events'],
+  ['mouseClicked', 'Events'],
+  ['mouseMoved', 'Events'],
+  ['mouseDragged', 'Events'],
+  ['mouseWheel', 'Events'],
+  ['keyPressed', 'Events'],
+  ['keyReleased', 'Events'],
+  ['keyTyped', 'Events'],
+  ['touchStarted', 'Events'],
+  ['touchMoved', 'Events'],
+  ['touchEnded', 'Events'],
+  ['deviceMoved', 'Events'],
+  ['deviceTurned', 'Events'],
+  ['deviceShaken', 'Events'],
+  ['loadJSON', 'I/O'],
+  ['loadStrings', 'I/O'],
+  ['loadXML', 'I/O'],
+  ['loadTable', 'I/O'],
+  ['saveJSON', 'I/O'],
+  ['saveStrings', 'I/O'],
+  ['saveTable', 'I/O'],
+  ['save', 'I/O'],
+  ['httpGet', 'I/O'],
+  ['httpPost', 'I/O'],
+  ['httpDo', 'I/O'],
+  ['translate', 'Transform'],
+  ['rotate', 'Transform'],
+  ['rotateX', 'Transform'],
+  ['rotateY', 'Transform'],
+  ['rotateZ', 'Transform'],
+  ['scale', 'Transform'],
+  ['shearX', 'Transform'],
+  ['shearY', 'Transform'],
+  ['pushMatrix', 'Transform'],
+  ['popMatrix', 'Transform'],
+  ['resetMatrix', 'Transform'],
+  ['applyMatrix', 'Transform'],
+  ['fill', 'Color & Style'],
+  ['noFill', 'Color & Style'],
+  ['stroke', 'Color & Style'],
+  ['noStroke', 'Color & Style'],
+  ['background', 'Color & Style'],
+  ['color', 'Color & Style'],
+  ['colorMode', 'Color & Style'],
+  ['erase', 'Color & Style'],
+  ['noErase', 'Color & Style'],
+  ['blendMode', 'Color & Style'],
+  ['angleMode', 'Color & Style'],
+  ['ellipseMode', 'Color & Style'],
+  ['rectMode', 'Color & Style'],
+  ['strokeCap', 'Color & Style'],
+  ['strokeJoin', 'Color & Style'],
+  ['strokeWeight', 'Color & Style'],
+  ['smooth', 'Color & Style'],
+  ['noSmooth', 'Color & Style'],
+  ['ellipse', 'Shape'],
+  ['circle', 'Shape'],
+  ['arc', 'Shape'],
+  ['rect', 'Shape'],
+  ['square', 'Shape'],
+  ['line', 'Shape'],
+  ['triangle', 'Shape'],
+  ['quad', 'Shape'],
+  ['point', 'Shape'],
+  ['beginShape', 'Shape'],
+  ['endShape', 'Shape'],
+  ['vertex', 'Shape'],
+  ['curveVertex', 'Shape'],
+  ['quadraticVertex', 'Shape'],
+  ['bezierVertex', 'Shape'],
+  ['contour', 'Shape'],
+  ['beginContour', 'Shape'],
+  ['endContour', 'Shape'],
+  ['curve', 'Shape'],
+  ['bezier', 'Shape'],
+  ['curveDetail', 'Shape'],
+  ['curveTightness', 'Shape'],
+  ['curvePoint', 'Shape'],
+  ['curveTangent', 'Shape'],
+  ['bezierPoint', 'Shape'],
+  ['bezierTangent', 'Shape'],
+  ['texture', 'Shape'],
+  ['textureMode', 'Shape'],
+  ['textureWrap', 'Shape'],
+  ['abs', 'Math'],
+  ['ceil', 'Math'],
+  ['constrain', 'Math'],
+  ['dist', 'Math'],
+  ['exp', 'Math'],
+  ['floor', 'Math'],
+  ['fract', 'Math'],
+  ['lerp', 'Math'],
+  ['log', 'Math'],
+  ['mag', 'Math'],
+  ['map', 'Math'],
+  ['max', 'Math'],
+  ['min', 'Math'],
+  ['norm', 'Math'],
+  ['pow', 'Math'],
+  ['round', 'Math'],
+  ['sq', 'Math'],
+  ['sqrt', 'Math'],
+  ['noise', 'Math'],
+  ['noiseDetail', 'Math'],
+  ['noiseSeed', 'Math'],
+  ['random', 'Math'],
+  ['randomSeed', 'Math'],
+  ['randomGaussian', 'Math'],
+  ['sin', 'Math'],
+  ['cos', 'Math'],
+  ['tan', 'Math'],
+  ['atan', 'Math'],
+  ['atan2', 'Math'],
+  ['asin', 'Math'],
+  ['acos', 'Math'],
+  ['degrees', 'Math'],
+  ['radians', 'Math'],
+  ['text', 'Typography'],
+  ['textFont', 'Typography'],
+  ['textSize', 'Typography'],
+  ['textStyle', 'Typography'],
+  ['textAlign', 'Typography'],
+  ['textWidth', 'Typography'],
+  ['textAscent', 'Typography'],
+  ['textDescent', 'Typography'],
+  ['textLeading', 'Typography'],
+  ['textWrap', 'Typography'],
+  ['loadFont', 'Typography'],
+  ['createCanvas', 'Rendering'],
+  ['resizeCanvas', 'Rendering'],
+  ['noCanvas', 'Rendering'],
+  ['createGraphics', 'Rendering'],
+  ['setAttributes', 'Rendering'],
+  ['pixelDensity', 'Rendering'],
+  ['displayDensity', 'Rendering'],
+  ['print', 'Rendering'],
+  ['println', 'Rendering'],
+  ['clear', 'Rendering'],
+  ['image', 'Image'],
+  ['createImage', 'Image'],
+  ['loadImage', 'Image'],
+  ['imageMode', 'Image'],
+  ['loadPixels', 'Image'],
+  ['updatePixels', 'Image'],
+  ['filter', 'Image'],
+  ['blend', 'Image'],
+  ['copy', 'Image'],
+  ['get', 'Image'],
+  ['resize', 'Image'],
+  ['saveCanvas', 'Image'],
+  ['saveFrames', 'Image'],
+  ['ambientLight', 'Lights & Camera'],
+  ['directionalLight', 'Lights & Camera'],
+  ['pointLight', 'Lights & Camera'],
+  ['spotLight', 'Lights & Camera'],
+  ['lights', 'Lights & Camera'],
+  ['noLights', 'Lights & Camera'],
+  ['lightFalloff', 'Lights & Camera'],
+  ['camera', 'Lights & Camera'],
+  ['createCamera', 'Lights & Camera'],
+  ['setCamera', 'Lights & Camera'],
+  ['orbitControl', 'Lights & Camera'],
+  ['debugMode', 'Lights & Camera'],
+  ['noDebug', 'Lights & Camera'],
+  ['perspective', 'Lights & Camera'],
+  ['ortho', 'Lights & Camera'],
+  ['createShader', 'Shaders'],
+  ['loadShader', 'Shaders'],
+  ['shader', 'Shaders'],
+  ['resetShader', 'Shaders'],
+  ['createVector', 'Vector'],
+  ['fromAngle', 'Vector'],
+  ['normalize', 'Vector'],
+  ['setMag', 'Vector'],
+  ['limit', 'Vector'],
+  ['heading', 'Vector'],
+  ['angleBetween', 'Vector'],
+  ['dot', 'Vector'],
+  ['cross', 'Vector'],
+  ['random2D', 'Vector'],
+  ['random3D', 'Vector'],
+  ['select', 'DOM'],
+  ['selectAll', 'DOM'],
+  ['drop', 'DOM'],
+  ['parent', 'DOM'],
+  ['style', 'DOM'],
+  ['position', 'DOM'],
+  ['show', 'DOM'],
+  ['hide', 'DOM'],
+  ['addClass', 'DOM'],
+  ['removeClass', 'DOM'],
+  ['toggleClass', 'DOM'],
+  ['child', 'DOM'],
+  ['attribute', 'DOM'],
+  ['value', 'DOM'],
+  ['html', 'DOM'],
+  ['center', 'DOM'],
+  ['createP', 'DOM'],
+  ['createDiv', 'DOM'],
+  ['createSpan', 'DOM'],
+  ['createInput', 'DOM'],
+  ['createButton', 'DOM'],
+  ['createCheckbox', 'DOM'],
+  ['createSelect', 'DOM'],
+  ['createRadio', 'DOM'],
+  ['createSlider', 'DOM'],
+  ['createColorPicker', 'DOM'],
+  ['createFileInput', 'DOM'],
+  ['createVideo', 'DOM'],
+  ['createAudio', 'DOM'],
+  ['createCapture', 'DOM'],
+  ['createWriter', 'DOM'],
+  ['userStartAudio', 'Sound'],
+  ['getAudioContext', 'Sound'],
+  ['soundFormats', 'Sound'],
+  ['loadSound', 'Sound'],
+  ['PI', 'Constants'],
+  ['TWO_PI', 'Constants'],
+  ['HALF_PI', 'Constants'],
+  ['QUARTER_PI', 'Constants'],
+  ['TAU', 'Constants'],
+  ['width', 'Properties'],
+  ['height', 'Properties'],
+  ['mouseX', 'Properties'],
+  ['mouseY', 'Properties'],
+  ['mouseButton', 'Properties'],
+  ['mouseIsPressed', 'Properties'],
+  ['key', 'Properties'],
+  ['keyCode', 'Properties'],
+  ['keyIsPressed', 'Properties'],
+  ['frameCount', 'Properties'],
+  ['frameRate', 'Properties'],
+  ['displayWidth', 'Properties'],
+  ['displayHeight', 'Properties'],
+  ['windowWidth', 'Properties'],
+  ['windowHeight', 'Properties'],
+  ['pixelDensity', 'Properties'],
+  ['focused', 'Properties'],
 ];
 
-function categorizeFunction(name: string): string {
-  for (const cat of CATEGORIES) {
-    if (cat.test(name)) return cat.label;
-  }
-  return 'General';
-}
-
-async function introspectP5Symbols(): Promise<P5ApiEntry[]> {
-  const { default: p5 } = await import('p5') as any;
-  p5.disableFriendlyErrors = true;
-  const proto = p5.prototype;
-  const entries: P5ApiEntry[] = [];
-  const seen = new Set<string>();
-
-  for (const name of Object.getOwnPropertyNames(proto)) {
-    if (name === 'constructor' || name.startsWith('_')) continue;
-    if (seen.has(name)) continue;
-    seen.add(name);
-
-    const isFunc = typeof (proto as any)[name] === 'function';
-
-    if (isFunc) {
-      entries.push({ name, category: categorizeFunction(name), type: 'function' });
-    } else {
-      const isConst = name === name.toUpperCase() && name.length > 1;
-      if (isConst) {
-        entries.push({ name, category: 'Constants', type: 'constant' });
-      } else {
-        entries.push({ name, category: 'Properties', type: 'property' });
-      }
-    }
-  }
-
-  return entries;
-}
-
-let _symbols: P5ApiEntry[] | null = null;
-let _initPromise: Promise<void> | null = null;
-
-async function initSymbols(): Promise<void> {
-  if (_symbols) return;
-  _symbols = await introspectP5Symbols();
-}
-
-function getP5Symbols(): P5ApiEntry[] {
-  if (!_symbols && !_initPromise && typeof window !== 'undefined') {
-    _initPromise = initSymbols().catch(() => { _symbols = []; });
-  }
-  return _symbols ?? [];
-}
-
 export function findUsedP5Symbols(code: string): UsedP5Symbol[] {
-  const symbols = getP5Symbols();
   const result: UsedP5Symbol[] = [];
   const seen = new Set<string>();
 
-  for (const entry of symbols) {
-    if (seen.has(entry.name)) continue;
-
-    const escaped = entry.name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  for (const [name, category] of SYMBOLS) {
+    if (seen.has(name)) continue;
+    const escaped = name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const pattern = new RegExp(`\\b${escaped}\\b`);
     if (pattern.test(code)) {
-      result.push({ name: entry.name, category: entry.category, type: entry.type });
-      seen.add(entry.name);
+      result.push({ name, category });
+      seen.add(name);
     }
   }
 

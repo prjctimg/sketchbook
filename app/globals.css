@@ -1,10 +1,13 @@
+/* ✎ USER: Customize your theme colors below
+   — Change hex values in :root (light) and .dark (dark mode).
+   — The @theme block reads these CSS variables automatically.
+*/
+
 @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
-@theme {
-  --font-mono: "JetBrains Mono", monospace;
-  --font-sans: "Space Grotesk", sans-serif;
-
+:root {
+  /* ✎ Light theme tokens */
   --color-primary: #000000;
   --color-primary-container: #eeeeee;
   --color-on-primary: #ffffff;
@@ -28,15 +31,9 @@
   
   --color-outline: #000000;
   --color-outline-variant: #dddddd;
-
-  --radius-default: 12px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-
-  --spacing-base: 32px;
 }
 
-/* Dark mode overrides */
+/* ✎ Dark theme tokens */
 .dark {
   --color-primary: #ffffff;
   --color-primary-container: #374151;
@@ -63,16 +60,71 @@
   --color-outline-variant: #374151;
 }
 
-:root {
-  /* Layout Variables */
-  --nav-height: 80px;
+@theme {
+  --font-mono: "JetBrains Mono", monospace;
+  --font-sans: "Space Grotesk", sans-serif;
 
-  /* Specific design system overrides */
+  --color-primary: var(--color-primary);
+  --color-primary-container: var(--color-primary-container);
+  --color-on-primary: var(--color-on-primary);
+  
+  --color-secondary: var(--color-secondary);
+  --color-secondary-container: var(--color-secondary-container);
+  --color-on-secondary: var(--color-on-secondary);
+
+  --color-tertiary: var(--color-tertiary);
+  --color-tertiary-container: var(--color-tertiary-container);
+  --color-on-tertiary: var(--color-on-tertiary);
+
+  --color-surface: var(--color-surface);
+  --color-surface-container-low: var(--color-surface-container-low);
+  --color-surface-container-high: var(--color-surface-container-high);
+  --color-surface-container-highest: var(--color-surface-container-highest);
+  --color-surface-container-lowest: var(--color-surface-container-lowest);
+  
+  --color-on-surface: var(--color-on-surface);
+  --color-on-surface-variant: var(--color-on-surface-variant);
+  
+  --color-outline: var(--color-outline);
+  --color-outline-variant: var(--color-outline-variant);
+
+  --radius-default: 12px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --spacing-base: 32px;
+}
+
+:root {
+  --nav-height: 80px;
   --primary: var(--color-primary);
   --on-primary: var(--color-on-primary);
   --surface: var(--color-surface);
   --on-surface: var(--color-on-surface);
   --spacing-base: 32px;
+}
+
+/* ✎ Page transitions (CSS View Transitions API) */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-old(root) {
+  animation: vt-fade-out 0.25s ease-out both;
+}
+
+::view-transition-new(root) {
+  animation: vt-fade-in 0.3s ease-out 0.05s both;
+}
+
+@keyframes vt-fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 body {
@@ -84,12 +136,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Global Reset to avoid bold */
 h1, h2, h3, h4, h5, h6, button, span, div {
   font-weight: 400 !important;
 }
 
-/* Custom Utilities for the Editorial Brutalism theme */
 .tracking-widest-labels {
   letter-spacing: 0.15em;
 }

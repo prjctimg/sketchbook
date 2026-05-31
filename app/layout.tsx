@@ -1,13 +1,28 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import siteMeta from "@/sitemeta.json";
-import Script from "next/script";
-
-const gaId = siteMeta.ga?.measurementId;
 
 export const metadata: Metadata = {
   title: siteMeta.site.title,
   description: siteMeta.site.description,
+  metadataBase: new URL(siteMeta.site.url),
+  openGraph: {
+    title: siteMeta.site.title,
+    description: siteMeta.site.description,
+    url: siteMeta.site.url,
+    siteName: siteMeta.site.title,
+    images: [{ url: siteMeta.site.image, width: 1200, height: 630 }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteMeta.site.title,
+    description: siteMeta.site.description,
+    images: [siteMeta.site.image],
+    creator: siteMeta.site.twitterHandle,
+  },
+  keywords: siteMeta.site.keywords,
+  robots: "index, follow",
 };
 
 export default function RootLayout({
@@ -36,22 +51,6 @@ export default function RootLayout({
             `,
           }}
         />
-        {gaId && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
-              strategy="afterInteractive"
-            />
-            <Script id="google-analytics" strategy="afterInteractive">
-              {`
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', '${gaId}');
-              `}
-            </Script>
-          </>
-        )}
       </head>
       <body className="antialiased">
         {children}
