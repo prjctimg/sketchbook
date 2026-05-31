@@ -2,12 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { SketchMetadata } from '@/types';
 import { loadP5JsonLibs } from './p5json';
-import { formatDate, generateThumbnailFromId } from './utils';
-
-function packageToCdnUrl(pkg: string): string | null {
-  if (pkg.includes('/')) return `https://cdn.jsdelivr.net/npm/${pkg}`;
-  return `https://unpkg.com/${pkg}`;
-}
+import { formatDate, generateThumbnailFromId, packageToCdnUrl } from './utils';
 
 export async function loadLocalSketches(dirPath: string): Promise<SketchMetadata[]> {
   const resolved = path.resolve(dirPath);

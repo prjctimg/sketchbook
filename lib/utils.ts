@@ -6,6 +6,11 @@ export function formatDate(date: Date): string {
   return `${month} ${day}, ${year}`;
 }
 
+export function packageToCdnUrl(pkg: string): string | null {
+  if (pkg.includes('/')) return `https://cdn.jsdelivr.net/npm/${pkg}`;
+  return `https://unpkg.com/${pkg}`;
+}
+
 export function generateThumbnailFromId(id: string): string {
   const hash = id.split('').reduce((acc, char) => {
     return ((acc << 5) - acc) + char.charCodeAt(0);

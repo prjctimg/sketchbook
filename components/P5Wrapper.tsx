@@ -41,21 +41,29 @@ function GlobalSketch({ code, cdnUrls = [], className }: {
     let cancelled = false;
 
     (async () => {
-      const deps = cdnUrls.filter(url => !/p5(\.min)?\.js/.test(url));
-      for (const url of deps) {
+      const allUrls = [...cdnUrls];
+      const p5CdnUrl = 'https://cdn.jsdelivr.net/npm/p5@2.2.3/lib/p5.min.js';
+      if (!allUrls.some(url => /p5(\.min)?\.js/.test(url))) {
+        allUrls.push(p5CdnUrl);
+      }
+      for (const url of allUrls) {
         try { await loadScript(url); } catch (e) {
           console.warn('Failed to load dep:', url, e);
         }
       }
       if (cancelled) return;
 
+      if (typeof (window as any).p5 !== 'undefined') {
+        (window as any).p5.disableFriendlyErrors = true;
+      }
+
       container.innerHTML = '';
       const script = document.createElement('script');
       script.textContent = code;
       container.appendChild(script);
 
-      const { default: p5 } = await import('p5') as any;
-      p5Ref.current = new p5();
+      const p5 = (window as any).p5;
+      if (p5) p5Ref.current = new p5();
     })();
 
     return () => {
@@ -77,6 +85,13 @@ function isGlobalMode(code: string): boolean {
 
 export const P5Wrapper = ({ sketch, className, cdnUrls = [], code, renderMode = 'auto' }: P5WrapperProps) => {
   const useGlobal = renderMode === 'global' || (renderMode === 'auto' && !!code && isGlobalMode(code));
+
+  useEffect(() => {
+    import('p5').then((m: any) => {
+      const p5 = m.default || m;
+      p5.disableFriendlyErrors = true;
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (useGlobal) return;

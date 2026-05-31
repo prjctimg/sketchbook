@@ -1,7 +1,7 @@
 import { SketchMetadata } from '@/types';
 import siteMeta from '@/sitemeta.json';
 import { loadP5JsonLibs } from './p5json';
-import { formatDate, generateThumbnailFromId } from './utils';
+import { formatDate, generateThumbnailFromId, packageToCdnUrl } from './utils';
 
 interface GistFile {
   filename: string;
@@ -136,6 +136,8 @@ export async function fetchGistSketches(): Promise<SketchMetadata[]> {
         const npmDeps = extractNpmDependencies(code);
         for (const dep of npmDeps) {
           if (!dependencies.includes(dep)) dependencies.push(dep);
+          const url = packageToCdnUrl(dep);
+          if (url && !cdnUrls.includes(url)) cdnUrls.push(url);
         }
       }
 

@@ -78,6 +78,7 @@ function categorizeFunction(name: string): string {
 
 async function introspectP5Symbols(): Promise<P5ApiEntry[]> {
   const { default: p5 } = await import('p5') as any;
+  p5.disableFriendlyErrors = true;
   const proto = p5.prototype;
   const entries: P5ApiEntry[] = [];
   const seen = new Set<string>();
