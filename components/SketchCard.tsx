@@ -9,16 +9,19 @@ import { wrapSketchCode, hasNoLoop } from '@/lib/sketchUtils';
 import { easing, duration } from '@/lib/motion';
 import { P5ErrorBoundary } from './P5ErrorBoundary';
 import { useLazyLoad } from '@/hooks/useLazyLoad';
+import { useSequentialRender } from '@/contexts/RenderQueue';
 
 interface SketchCardProps {
   sketch: SketchMetadata;
   onClick: (id: string) => void;
   className?: string;
-  lazyDelay?: number;
+  index?: number;
 }
 
-export const SketchCard: React.FC<SketchCardProps> = ({ sketch, onClick, className, lazyDelay = 0 }) => {
-  const { ref, shouldRender } = useLazyLoad(lazyDelay, '400px');
+export const SketchCard: React.FC<SketchCardProps> = ({ sketch, onClick, className, index = 0 }) => {
+  const { ref, shouldRender: isNearViewport } = useLazyLoad(0, '400px');
+  const canRenderQueue = useSequentialRender(index);
+  const shouldRender = isNearViewport && canRenderQueue;
   const usesNoLoop = useMemo(() => hasNoLoop(sketch.code), [sketch.code]);
 
   const sketchFn = useMemo(() => {

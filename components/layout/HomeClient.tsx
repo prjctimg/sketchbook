@@ -9,6 +9,7 @@ import { SketchCard } from '@/components/SketchCard';
 import { SketchMetadata } from '@/types';
 import { Footer } from '@/components/Footer';
 import { easing, duration } from '@/lib/motion';
+import { SequentialRenderProvider } from '@/contexts/RenderQueue';
 
 export default function HomeClient({ sketches }: { sketches: SketchMetadata[] }) {
   const router = useRouter();
@@ -16,9 +17,7 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'system' | 'light' | 'dark' | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-    }
+    if (savedTheme) setTheme(savedTheme);
   }, []);
 
   useEffect(() => {
@@ -29,11 +28,8 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
       root.classList.remove('dark');
     } else {
       const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (systemDark) {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
+      if (systemDark) root.classList.add('dark');
+      else root.classList.remove('dark');
     }
     localStorage.setItem('theme', theme);
   }, [theme]);
@@ -86,7 +82,7 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
                 transition={{ delay: 0.3, duration: duration.compact, ease: easing.decelerate }}
                 className="lg:col-span-2 relative rounded-xl overflow-hidden"
               >
-                <SketchCard sketch={sketches[0]} onClick={handleSketchClick} className="w-full h-full !mb-0 border-none pb-0" />
+                <SketchCard sketch={sketches[0]} onClick={handleSketchClick} className="w-full h-full !mb-0 border-none pb-0" index={0} />
               </motion.div>
             </div>
           </section>
@@ -98,61 +94,63 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
               <h3 className="font-mono text-sm uppercase tracking-widest opacity-60">Gallery</h3>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-              {sketches.length > 0 ? (
-                <>
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.1, duration: duration.compact, ease: easing.decelerate }}
-                    className="md:col-span-8"
-                  >
-                    <SketchCard
-                      sketch={sketches[0]}
-                      onClick={handleSketchClick}
-                      lazyDelay={0}
-                    />
-                  </motion.div>
-                  <motion.div
-                    layout
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: duration.compact, ease: easing.decelerate }}
-                    className="md:col-span-4 flex flex-col justify-end pb-8"
-                  >
-                    {sketches[1] && (
-                      <SketchCard
-                        sketch={sketches[1]}
-                        onClick={handleSketchClick}
-                        lazyDelay={50}
-                      />
-                    )}
-                  </motion.div>
-
-                  {sketches.slice(2).map((sketch, idx) => (
+            <SequentialRenderProvider total={sketches.length} delay={400}>
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                {sketches.length > 0 ? (
+                  <>
                     <motion.div
                       layout
-                      key={sketch.id}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 * (idx % 3 + 1), duration: duration.compact, ease: easing.decelerate }}
-                      className="md:col-span-4"
+                      transition={{ delay: 0.1, duration: duration.compact, ease: easing.decelerate }}
+                      className="md:col-span-8"
                     >
                       <SketchCard
-                        sketch={sketch}
+                        sketch={sketches[0]}
                         onClick={handleSketchClick}
-                        lazyDelay={idx < 4 ? 0 : 100}
+                        index={0}
                       />
                     </motion.div>
-                  ))}
-                </>
-              ) : (
-                <div className="col-span-12 py-32 text-center border border-outline/20 rounded-xl">
-                  <span className="font-mono text-xs opacity-40 uppercase tracking-widest">No active gists.</span>
-                </div>
-              )}
-            </div>
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2, duration: duration.compact, ease: easing.decelerate }}
+                      className="md:col-span-4 flex flex-col justify-end pb-8"
+                    >
+                      {sketches[1] && (
+                        <SketchCard
+                          sketch={sketches[1]}
+                          onClick={handleSketchClick}
+                          index={1}
+                        />
+                      )}
+                    </motion.div>
+
+                    {sketches.slice(2).map((sketch, idx) => (
+                      <motion.div
+                        layout
+                        key={sketch.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1 * (idx % 3 + 1), duration: duration.compact, ease: easing.decelerate }}
+                        className="md:col-span-4"
+                      >
+                        <SketchCard
+                          sketch={sketch}
+                          onClick={handleSketchClick}
+                          index={idx + 2}
+                        />
+                      </motion.div>
+                    ))}
+                  </>
+                ) : (
+                  <div className="col-span-12 py-32 text-center border border-outline/20 rounded-xl">
+                    <span className="font-mono text-xs opacity-40 uppercase tracking-widest">No active gists.</span>
+                  </div>
+                )}
+              </div>
+            </SequentialRenderProvider>
           </div>
         </section>
       </motion.main>

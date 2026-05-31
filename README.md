@@ -40,21 +40,27 @@ The first GitHub comment on a gist (by the gist owner) becomes the sketch descri
 >
 > See [Optimizing p5.js Code for Performance](https://github.com/processing/p5.js/wiki/Optimizing-p5.js-Code-for-Performance)
 
-### Dev Mode
+### Writing Sketches
 
-```bash
-DEV_SKETCHES_DIR=dev-sketches npm run dev
+All sketches must use **instance mode**. Wrap your p5 code in a `sketch` function:
+
+```javascript
+// deps: d3-delaunay            ← npm packages for CDN loading
+const sketch = (p) => {
+  p.setup = () => {
+    p.createCanvas(400, 400);
+  };
+
+  p.draw = () => {
+    p.background(220);
+    p.ellipse(p.width / 2, p.height / 2, 50);
+  };
+};
 ```
 
-Place `sketch.js` files in `dev-sketches/` for local development without GitHub Gists.
-
-Add a `p5.json` file in `dev-sketches/` to declare global dependencies:
-
-```json
-{
-  "libs": { "d3": "7" }
-}
-```
+- Access all p5 functions and properties through the `p` parameter: `p.createCanvas()`, `p.background()`, `p.width`, `p.PI`, etc.
+- Declare CDN dependencies with `// deps:` at the top (comma-separated npm package names)
+- Define event handlers as instance methods: `p.mousePressed = () => {}` instead of `function mousePressed()`
 
 ## License
 
