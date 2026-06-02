@@ -1,3 +1,3 @@
-- Remove the `gistIncludeMarker` feature and its related code. The only criteria is that the gist should have a `sketch.js` file and optionally the p5.json file.
+- Remove the `gistIncludeMarker` feature and its related code. The only criterion is that the gist should have a `sketch.js` file and optionally the p5.json file.
 - Look for any code smells and suggest how to fix them. This means also getting rid of obvious LLM patterns in the code such as verbosity and noisy code (single use variables, redundant conditional checks etc.)
-- Remove these fields from the sitemeta.json and the code related: twitterHandle.
+- Remove this field from the sitemeta.json and the related code: twitterHandle.

@@ -2,10 +2,10 @@
 
 <!--toc:start-->
 - [sketchbook](#sketchbook)
-  - [What does it allow you to do (features) ?](#what-does-it-allow-you-to-do-features)
-    - [Why not just use the p5 web editor ?](#why-not-just-use-the-p5-web-editor)
+  - [What does it allow you to do (features)?](#what-does-it-allow-you-to-do-features)
+    - [Why not just use the p5 web editor?](#why-not-just-use-the-p5-web-editor)
   - [Configuration](#configuration)
-  - [How (why) does it work ?](#how-why-does-it-work)
+  - [How (why) does it work?](#how-why-does-it-work)
     - [Sketch format](#sketch-format)
   - [Other related references](#other-related-references)
   - [License 📜](#license-📜)
@@ -15,7 +15,7 @@
 
 > Showcase your sketches hosted on GitHub Gists.
 
-## What does it allow you to do (features) ?
+## What does it allow you to do (features)?
 
 - Load and preview sketches (dynamically) via GitHub gists
 - Edit and run sketch code on-site
@@ -25,11 +25,11 @@
 
 > [!note]
 >
-> ### Why not just use the p5 web editor ?
+> ### Why not just use the p5 web editor?
 >
-> This project is far from competing with the p5.js web editor for functionality (i.e it doesn't have FES integration etc) but rather serves as an alternative approach to sharing your sketches in a more 'self hosted' fashion.
+> This project is far from competing with the p5.js web editor for functionality (i.e., it doesn't have FES integration, etc.) but rather serves as an alternative approach to sharing your sketches in a more self-hosted fashion.
 >
-> Also the motivation of this template was to reduce the moving parts between developing, publishing and maintaining sketches such that any changes should be trivial and be kept at one 'source of truth'.
+> Also the motivation of this template was to reduce the moving parts between developing, publishing, and maintaining sketches so that any changes are trivial and kept at one 'source of truth'.
 >
 > If you're looking to learn p5.js instead, please use the web editor as it has many more features geared towards that goal.
 >
@@ -54,12 +54,12 @@ Edit the `sitemeta.json` file to configure your sketchbook:
 }
 ```
 
-## How (why) does it work ?
+## How (why) does it work?
 
 Each gist must contain a `sketch.js` file and optionally a `p5.json` file.
 
-If the gist has a `p5.json`, the `libs` key is scrapped for any installed p5 plugins and loads them via a CDN.
-Other dependencies outside of the p5.js scope are specified using a special comment  with each name being a valid NPM package name (space or comma separated):
+If the gist has a `p5.json`, the `libs` key is scraped for any installed p5 plugins and loads them via a CDN.
+Other dependencies outside of the p5.js scope are specified using a special comment with each name being a valid NPM package name (space or comma separated):
 
 ```js
 
@@ -71,7 +71,7 @@ Other dependencies outside of the p5.js scope are specified using a special comm
 ```
 
 > [!caution]
-> Loading (big) modules can increase your sketch preview page's [FCP]() as well as the page's RAM usage considerably. Pick the lightest dependency whenever possible.
+> Loading (big) modules can increase your sketch preview page's [FCP](https://web.dev/fcp/) as well as the page's RAM usage considerably. Pick the lightest dependency whenever possible.
 >
 
 The first GitHub comment on a gist (by the gist owner) becomes the sketch description. When that comment is updated (or the associated `sketch.js` and `p5.json` file), the changes are immediately mirrored on the sketchbook.
@@ -79,7 +79,7 @@ The first GitHub comment on a gist (by the gist owner) becomes the sketch descri
 This allows the user to make edits to their sketches and not worry about redeploying for the changes to take effect.
 
 > [!tip]
-> There's [a (nice) workflow that I use to develop, publish and maintain  sketches](https://prjctimg.me/blg/how-i-use-neovim-to-run-skchbk) from the terminal using the [p5.nvim plugin](https://github.com/prjctimg/p5.nvim)
+> There's [a (nice) workflow that I use to develop, publish and maintain sketches](https://prjctimg.me/blg/how-i-use-neovim-to-run-skchbk) from the terminal using the [p5.nvim plugin](https://github.com/prjctimg/p5.nvim)
 
 > [!warning]
 > Rendering is expensive.
@@ -90,7 +90,7 @@ This allows the user to make edits to their sketches and not worry about redeplo
 
 ### Sketch format
 
-All sketches must be in instance mode,**global mode** will not work.
+All sketches must be in instance mode, **global mode** will not work.
 
 This allows us to embed different sketches without creating any collisions with other JS libraries.
 
@@ -99,7 +99,7 @@ This allows us to embed different sketches without creating any collisions with 
 
 ## Other related references
 
-- [p5.js web editor]()
+- [p5.js web editor](https://editor.p5js.org)
 - [GitHub Gists](https://gist.github.com)
 - [On keeping a sketchbook](https://prjctimg.me/blg/on-keeping-a-sketchbook)
 - [p5.nvim](https://github.com/prjctimg/p5.nvim)
