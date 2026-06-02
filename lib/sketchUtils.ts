@@ -11,7 +11,7 @@ export const wrapSketchCode = (code: string) => {
   if (GLOBAL_MODE_RE.test(code) && !WARNED.has(code)) {
     WARNED.add(code);
     console.warn(
-      '[skchbk] Global-mode p5 sketch detected. Wrap your code in instance mode:\n' +
+      '[sketchbook] Global-mode p5 sketch detected. Wrap your code in instance mode:\n' +
       '  const sketch = (p) => {\n' +
       '    p.setup = () => { p.createCanvas(400, 400); };\n' +
       '    p.draw = () => { p.background(220); };\n' +

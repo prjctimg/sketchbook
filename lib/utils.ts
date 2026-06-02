@@ -1,7 +1,7 @@
 const MONTHS = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
 
-export function formatDate(input: string | Date): string {
-  const date = typeof input === 'string' ? new Date(input) : input;
+export function formatDate(dateString: string): string {
+  const date = new Date(dateString);
   const month = MONTHS[date.getMonth()];
   const day = date.getDate().toString().padStart(2, '0');
   const year = date.getFullYear();

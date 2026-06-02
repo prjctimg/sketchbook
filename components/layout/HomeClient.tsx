@@ -17,7 +17,9 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'system' | 'light' | 'dark' | null;
-    if (savedTheme) setTheme(savedTheme);
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
   }, []);
 
   useEffect(() => {
@@ -28,8 +30,11 @@ export default function HomeClient({ sketches }: { sketches: SketchMetadata[] })
       root.classList.remove('dark');
     } else {
       const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (systemDark) root.classList.add('dark');
-      else root.classList.remove('dark');
+      if (systemDark) {
+        root.classList.add('dark');
+      } else {
+        root.classList.remove('dark');
+      }
     }
     localStorage.setItem('theme', theme);
   }, [theme]);

@@ -1,19 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { AlertTriangle, X } from 'lucide-react';
+import { hasNoLoop } from '@/lib/sketchUtils';
 
-interface FESBannerProps {
+interface NoLoopWarningProps {
   code?: string;
 }
 
-function detectNoLoop(code: string): boolean {
-  return /\bnoLoop\s*\(/.test(code);
-}
-
-export function NoLoopWarning({ code }: { code?: string }) {
+export function NoLoopWarning({ code }: NoLoopWarningProps) {
   const [dismissed, setDismissed] = useState(false);
-  if (!code || !detectNoLoop(code) || dismissed) return null;
+  if (!code || !hasNoLoop(code) || dismissed) return null;
 
   return (
     <div className="flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg text-xs">

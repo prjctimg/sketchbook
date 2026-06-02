@@ -16,12 +16,12 @@ export const Hero: React.FC = () => {
         className="max-w-7xl mx-auto"
       >
         <p className="font-mono text-[1.5rem] leading-relaxed max-w-4xl mb-6 opacity-80">
-          I am <a href={githubUrl} className="hover:text-primary transition-colors underline underline-offset-4 decoration-1">{siteMeta.github.username}</a>, keeper of this sketchbook (a collection of p5.js programs which are &apos;unsurprisingly&apos; called sketches). Though all to be seen is already here, <a href={githubUrl} className="hover:text-primary transition-colors underline underline-offset-4 decoration-1">one can go to the list of sketches</a> for reference.
+          I am <a href={githubUrl} className="hover:text-primary transition-colors underline underline-offset-4 decoration-1">{siteMeta.github.username}</a>, keeper of this sketchbook (a collection of p5.js programs which are 'unsurprisingly' called sketches). Though all to be seen is already here, <a href={githubUrl} className="hover:text-primary transition-colors underline underline-offset-4 decoration-1">one can go to the list of sketches</a> for reference.
 
           <br />
           <br />
 
-          This is a &quot;breathing space&quot; for creativity and nothing more, (please) treat it as such. Enjoy 🖼️!
+          This is a "breathing space" for creativity and nothing more, (please) treat it as such. Enjoy 🖼️!
         </p>
       </motion.div>
     </header>
