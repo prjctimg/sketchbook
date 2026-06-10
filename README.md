@@ -48,10 +48,7 @@ Edit the `sitemeta.json` file to configure your sketchbook:
   "github": {
     "username": "your-github-username",
   },
-  "ga": {
-    "measurementId": ""  // Google Analytics 4 measurement ID (optional)
   }
-}
 ```
 
 ## How (why) does it work?
