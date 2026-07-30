@@ -1,13 +1,5 @@
 export interface P5Json {
-  version?: string;
-  major?: number;
   libs?: Record<string, string>;
-  includes?: string[];
-  gist?: {
-    url?: string;
-    title?: string;
-    description?: string;
-  };
 }
 
 export interface P5JsonLibsResult {

@@ -1,12 +1,12 @@
 import type { Metadata } from 'next';
-import { getSketches } from '@/lib/sketches';
+import { fetchGistSketches } from '@/lib/gistService';
 import { SketchDetail } from '@/components/SketchDetail';
 import { notFound } from 'next/navigation';
 import siteMeta from '@/sitemeta.json';
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const sketches = await getSketches();
+  const sketches = await fetchGistSketches();
   const sketch = sketches.find(s => s.id === id);
   if (!sketch) return { title: 'Not Found' };
 
@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function SketchPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const sketches = await getSketches();
+  const sketches = await fetchGistSketches();
   const sketch = sketches.find(s => s.id === id);
   if (!sketch) notFound();
 

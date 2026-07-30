@@ -9,9 +9,6 @@ interface FooterProps {
   setTheme: (t: 'system' | 'light' | 'dark') => void;
 }
 
-const WHAT_IS_SKETCHBOOK_URL = 'https://prjctimg.me/blg/on-keeping-a-sketchbook';
-const AUTHOR_GITHUB_URL = `https://github.com/${siteMeta.github.username}`;
-
 export const Footer: React.FC<FooterProps> = ({ theme, setTheme }) => {
   return (
     <footer className="px-base py-16 md:py-24 bg-surface text-on-surface border-t border-outline/10 rounded-t-xl">
@@ -57,10 +54,10 @@ export const Footer: React.FC<FooterProps> = ({ theme, setTheme }) => {
 
         {/* Copyright Line */}
         <div className="flex items-center space-x-2 font-mono text-xs opacity-70 uppercase tracking-widest">
-          <a href={WHAT_IS_SKETCHBOOK_URL} className="hover:text-primary transition-colors">What&apos;s a sketchbook ?</a>
+          <a href="https://prjctimg.me/blg/on-keeping-a-sketchbook" className="hover:text-primary transition-colors">What&apos;s a sketchbook ?</a>
           <span>·</span>
           <span>&copy; {new Date().getFullYear()},</span>
-          <a href={AUTHOR_GITHUB_URL} className="hover:text-primary transition-colors">
+          <a href={`https://github.com/${siteMeta.github.username}`} className="hover:text-primary transition-colors">
             <Github size={14} />
           </a>
         </div>

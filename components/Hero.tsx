@@ -4,9 +4,8 @@ import React from 'react';
 import { motion } from 'motion/react';
 import siteMeta from '@/sitemeta.json';
 
-const githubUrl = `https://github.com/${siteMeta.github.username}`;
-
 export const Hero: React.FC = () => {
+  const githubUrl = `https://github.com/${siteMeta.github.username}`;
   return (
     <header className="px-base py-16 md:px-base lg:px-base mb-12 border-b border-outline/10 rounded-b-xl">
       <motion.div
