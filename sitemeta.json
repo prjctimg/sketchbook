@@ -4,7 +4,8 @@
     "description": "Your description",
     "url": "https://example.com",
     "image": "/og-image.png",
-    "keywords": "p5.js, generative art, creative coding, sketchbook",
+    "keywords": "p5.js, generative art, creative coding, sketchbook"
+  },
   "faviconEmoji": "\ud83d\udd8c",
   "github": {
     "username": "your-username"

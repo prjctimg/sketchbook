@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'motion/react';
 import { ArrowLeft, ChevronLeft, ChevronRight, Maximize2, Minimize2, RotateCcw, Github, Code as CodeIcon, ChevronUp, ChevronDown } from 'lucide-react';
 import { SketchMetadata } from '@/types';
@@ -11,10 +12,10 @@ import { findUsedP5Symbols } from '@/lib/p5ApiSymbols';
 import { easing, duration } from '@/lib/motion';
 import { NoLoopWarning } from './FESBanner';
 import { Footer } from '@/components/Footer';
-import CodeMirror from '@uiw/react-codemirror';
-import { javascript } from '@codemirror/lang-javascript';
-import Markdown, { Components } from 'react-markdown';
+import Markdown, { type Components } from 'react-markdown';
 import { useTheme } from '@/hooks/useTheme';
+
+const CodeEditor = dynamic(() => import('./CodeEditor').then(m => m.CodeEditor), { ssr: false });
 
 const markdownComponents: Components = {
   a: ({ node, ...props }) => (
@@ -238,19 +239,10 @@ export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, next
                     </div>
                   </div>
                   <div className="overflow-hidden">
-                    <CodeMirror
+                    <CodeEditor
                       value={editedCode}
                       height="500px"
-                      theme="dark"
-                      extensions={[javascript()]}
                       onChange={(value) => setEditedCode(value)}
-                      className="text-sm"
-                      basicSetup={{
-                        lineNumbers: true,
-                        foldGutter: true,
-                        highlightActiveLine: true,
-                        highlightSelectionMatches: true,
-                      }}
                     />
                   </div>
                 </motion.div>

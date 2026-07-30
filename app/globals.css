@@ -3,7 +3,6 @@
    — The @theme block reads these CSS variables automatically.
 */
 
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Space+Grotesk:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 :root {
