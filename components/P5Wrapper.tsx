@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { NextReactP5Wrapper } from '@p5-wrapper/next';
 
 interface P5WrapperProps {
@@ -8,6 +8,18 @@ interface P5WrapperProps {
   className?: string;
   cdnUrls?: string[];
   code?: string;
+}
+
+let p5Ready: Promise<void> | null = null;
+
+function ensureP5Ready(): Promise<void> {
+  if (!p5Ready) {
+    p5Ready = import('p5').then((m: any) => {
+      const p5 = m.default || m;
+      p5.disableFriendlyErrors = true;
+    });
+  }
+  return p5Ready;
 }
 
 function parseCdnPackagesFromCode(code: string): string[] {
@@ -36,10 +48,10 @@ function packageToCdnUrl(pkg: string): string | null {
   return `https://unpkg.com/${pkg}`;
 }
 
+const P5_JS_RE = /\/p5(\.min)?\.js$/;
+
 function getExternalUrls(cdnUrls: string[], code: string | undefined): string[] {
-  const filtered = cdnUrls.filter(
-    url => !url.includes('p5.js') && !url.includes('p5.min.js')
-  );
+  const filtered = cdnUrls.filter(url => !P5_JS_RE.test(url));
   const codePackages = code ? parseCdnPackagesFromCode(code) : [];
   const codeCdnUrls = codePackages
     .map(pkg => packageToCdnUrl(pkg))
@@ -48,13 +60,14 @@ function getExternalUrls(cdnUrls: string[], code: string | undefined): string[] 
 }
 
 export const P5Wrapper = React.memo(({ sketch, className, cdnUrls = [], code }: P5WrapperProps) => {
+  const [ready, setReady] = useState(false);
   const [scriptsReady, setScriptsReady] = useState(false);
+  const scriptElementsRef = useRef<HTMLScriptElement[]>([]);
 
   useEffect(() => {
-    import('p5').then((m: any) => {
-      const p5 = m.default || m;
-      p5.disableFriendlyErrors = true;
-    }).catch(() => {});
+    let cancelled = false;
+    ensureP5Ready().then(() => { if (!cancelled) setReady(true); });
+    return () => { cancelled = true; };
   }, []);
 
   useEffect(() => {
@@ -67,6 +80,7 @@ export const P5Wrapper = React.memo(({ sketch, className, cdnUrls = [], code }: 
     }
 
     const loaded = new Set<string>();
+    const created: HTMLScriptElement[] = [];
 
     for (const url of allUrls) {
       const existing = document.querySelector<HTMLScriptElement>(`script[src="${url}"]`);
@@ -85,22 +99,30 @@ export const P5Wrapper = React.memo(({ sketch, className, cdnUrls = [], code }: 
       script.src = url;
       script.async = true;
       script.onload = handler;
-      script.onerror = () => { console.warn(`Failed to load ${url}`); handler(); };
+      script.onerror = () => { console.warn(`[sketchbook] Failed to load ${url}`); handler(); };
       document.head.appendChild(script);
+      created.push(script);
     }
+
+    scriptElementsRef.current = created;
 
     if (loaded.size === allUrls.length && !cancelled) {
       setScriptsReady(true);
     }
 
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+      for (const el of created) {
+        el.remove();
+      }
+    };
   }, [cdnUrls, code]);
 
   if (!sketch) {
     return <div className={className} />;
   }
 
-  if (!scriptsReady) {
+  if (!ready || !scriptsReady) {
     return <div className={`${className} sketch-placeholder-bg animate-pulse`} />;
   }
 

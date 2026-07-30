@@ -35,6 +35,9 @@ const GITHUB_USER = siteMeta.github.username;
 async function fetchGists(): Promise<Gist[]> {
   const response = await fetch(`${GITHUB_API_BASE}/users/${GITHUB_USER}/gists?per_page=100`);
   if (!response.ok) {
+    if (response.status === 403 || response.status === 429) {
+      console.error('[sketchbook] GitHub API rate limited. Try again later or set a GITHUB_TOKEN.');
+    }
     throw new Error(`Failed to fetch gists: ${response.status}`);
   }
   return response.json();
@@ -112,17 +115,20 @@ export async function fetchGistSketches(): Promise<SketchMetadata[]> {
 
       const firstComment = getFirstCommentText(comments);
 
-      const description = gist.description || firstComment || 'No description';
-      const additionalInfo = firstComment && gist.description ? firstComment : null;
+      const descParts: string[] = [];
+      if (gist.description) descParts.push(gist.description);
+      if (firstComment && gist.description) descParts.push(firstComment);
+      const description = descParts.length > 0 ? descParts.join('\n\n') : 'No description';
 
       let cdnUrls: string[] = [];
 
       let thumbnail = generateThumbnailFromId(gist.id);
-      if (gist.files['thumbnail.png']) {
-        thumbnail = gist.files['thumbnail.png'].raw_url;
-      } else if (gist.files['thumbnail.jpg'] || gist.files['thumbnail.jpeg']) {
-        const jpgFile = gist.files['thumbnail.jpg'] || gist.files['thumbnail.jpeg'];
-        thumbnail = jpgFile!.raw_url;
+      const thumbPng = gist.files['thumbnail.png'];
+      const thumbJpg = gist.files['thumbnail.jpg'] || gist.files['thumbnail.jpeg'];
+      if (thumbPng) {
+        thumbnail = thumbPng.raw_url;
+      } else if (thumbJpg) {
+        thumbnail = thumbJpg.raw_url;
       }
 
       const dependencies = ['p5.js'];
@@ -148,7 +154,7 @@ export async function fetchGistSketches(): Promise<SketchMetadata[]> {
       return {
         id: gist.id,
         title: generateTitleFromDescription(gist.description, gist.id),
-        description: additionalInfo || description,
+        description,
         date: formatDate(gist.created_at),
         tags: [] as string[],
         thumbnail,
