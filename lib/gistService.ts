@@ -91,8 +91,6 @@ function extractNpmDependencies(code: string): string[] {
 
 export async function fetchGistSketches(): Promise<SketchMetadata[]> {
   const gists = await fetchGists();
-  const includeMarker = siteMeta.github.gistIncludeMarker?.trim();
-
   const gistPromises = gists
     .filter(gist => gist.files['sketch.js'])
     .map(async (gist) => {
@@ -103,10 +101,6 @@ export async function fetchGistSketches(): Promise<SketchMetadata[]> {
         code = await fetchSketchCode(sketchFile.raw_url);
       } catch (e) {
         console.warn(`Failed to fetch code for gist ${gist.id}:`, e);
-      }
-
-      if (includeMarker && (!code || !code.startsWith(includeMarker))) {
-        return null;
       }
 
       const [comments, p5jsonContent] = await Promise.all([

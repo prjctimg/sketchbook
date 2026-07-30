@@ -19,7 +19,6 @@ export const metadata: Metadata = {
     title: siteMeta.site.title,
     description: siteMeta.site.description,
     images: [siteMeta.site.image],
-    creator: siteMeta.site.twitterHandle,
   },
   keywords: siteMeta.site.keywords,
   robots: "index, follow",

@@ -5,11 +5,8 @@
     "url": "https://example.com",
     "image": "/og-image.png",
     "keywords": "p5.js, generative art, creative coding, sketchbook",
-    "twitterHandle": "@your-handle"
-  },
-  "faviconEmoji": "🖌",
+  "faviconEmoji": "\ud83d\udd8c",
   "github": {
-    "username": "your-username",
-    "gistIncludeMarker": "// @sketch"
+    "username": "your-username"
   }
 }
