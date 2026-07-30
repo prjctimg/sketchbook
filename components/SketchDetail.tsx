@@ -14,6 +14,7 @@ import { Footer } from '@/components/Footer';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
 import Markdown, { Components } from 'react-markdown';
+import { useTheme } from '@/hooks/useTheme';
 
 const markdownComponents: Components = {
   a: ({ node, ...props }) => (
@@ -29,24 +30,8 @@ interface SketchDetailProps {
 
 export const SketchDetail: React.FC<SketchDetailProps> = ({ sketch, prevId, nextId }) => {
   const router = useRouter();
-  const [theme, setTheme] = useState<'system' | 'light' | 'dark'>('system');
+  const { theme, setTheme } = useTheme();
   const [reloadKey, setReloadKey] = useState(0);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'system' | 'light' | 'dark' | null;
-    if (savedTheme) setTheme(savedTheme);
-  }, []);
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (theme === 'dark') root.classList.add('dark');
-    else if (theme === 'light') root.classList.remove('dark');
-    else {
-      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      root.classList.toggle('dark', systemDark);
-    }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
 
   const handleBack = useCallback(() => router.push('/'), [router]);
   const handlePrev = useCallback(() => { if (prevId) router.push(`/sketch/${prevId}`); }, [prevId, router]);

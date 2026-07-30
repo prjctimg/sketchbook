@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion } from 'motion/react';
 import { useRouter } from 'next/navigation';
 import { Navbar } from '@/components/Navbar';
@@ -10,34 +10,11 @@ import { SketchMetadata } from '@/types';
 import { Footer } from '@/components/Footer';
 import { easing, duration } from '@/lib/motion';
 import { SequentialRenderProvider } from '@/contexts/RenderQueue';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function HomeClient({ sketches }: { sketches: SketchMetadata[] }) {
   const router = useRouter();
-  const [theme, setTheme] = useState<'system' | 'light' | 'dark'>('system');
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as 'system' | 'light' | 'dark' | null;
-    if (savedTheme) {
-      setTheme(savedTheme);
-    }
-  }, []);
-
-  useEffect(() => {
-    const root = window.document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else if (theme === 'light') {
-      root.classList.remove('dark');
-    } else {
-      const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      if (systemDark) {
-        root.classList.add('dark');
-      } else {
-        root.classList.remove('dark');
-      }
-    }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+  const { theme, setTheme } = useTheme();
 
   const handleSketchClick = (id: string) => {
     router.push(`/sketch/${id}`);
